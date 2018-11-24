@@ -6,14 +6,16 @@ from django.core import serializers
 
 
 def index(request):
-    dados = (
-        Pauta.objects
-        .order_by('-data_sessao')
-        .filter()
-        .values('id', 'descricao', 'link', 'data_sessao')
-    )
-    pautas_list = list(dados)
-    return JsonResponse(pautas_list, safe=False)
+    jsonresponse = []
+    for pauta in Pauta.objects.all().order_by('-data_sessao'):
+        jsonresponse.append({
+            "id": pauta.id,
+            "descricao": pauta.descricao,
+            "link": pauta.link,
+            "data_sessao": pauta.data_sessao
+        })
+
+    return JsonResponse({"results": jsonresponse})
 
 
 def recuperar(request):
