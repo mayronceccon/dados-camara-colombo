@@ -15,6 +15,11 @@ class Pauta(models.Model):
     def __str__(self):
         return self.descricao
 
+    def save(self, *args, **kwargs):
+        cache_key = 'pauta_list'
+        cache.delete(cache_key)
+        super(Pauta, self).save(*args, **kwargs)
+
     def salvar_busca():
         dados = Pauta.busca_arquivos_sessao()
         for dado in dados:

@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.contrib.sites.models import Site
 from django.template.defaultfilters import slugify
+from django.core.cache import cache
 import os
 import uuid
 
@@ -26,4 +27,12 @@ class Vereador(models.Model):
         return self.nome
 
     def get_absolute_image_url(self):
-        return "{0}{1}".format(Site.objects.get_current(), self.foto.url)
+        try:
+            return "{0}{1}".format(Site.objects.get_current(), self.foto.url)
+        except Exception:
+            return None
+
+    def save(self, *args, **kwargs):
+        cache_key = 'vereador_list'
+        cache.delete(cache_key)
+        super(Vereador, self).save(*args, **kwargs)
