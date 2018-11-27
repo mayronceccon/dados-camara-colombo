@@ -1,5 +1,6 @@
 from django.db import models
 from django.db import IntegrityError
+from django.core.cache import cache
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from datetime import datetime
