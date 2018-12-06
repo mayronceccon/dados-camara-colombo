@@ -11,7 +11,7 @@ def index(request):
 
     if not data:
         jsonresponse = []
-        for vereador in Vereador.objects.all().order_by('-nome'):
+        for vereador in Vereador.objects.all().order_by('nome'):
             jsonresponse.append({
                 "id": vereador.id,
                 "nome": vereador.nome,
