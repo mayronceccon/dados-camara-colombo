@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from urllib.request import urlopen
 from datetime import datetime
 import re
+from lib.notificacao import send
 
 
 class Pauta(models.Model):
@@ -23,17 +24,26 @@ class Pauta(models.Model):
 
     def salvar_busca():
         dados = Pauta.busca_arquivos_sessao()
+        notificar = False
         for dado in dados:
             try:
+                descricao = dado['titulo']
                 pauta = Pauta(
-                    descricao=dado['titulo'],
+                    descricao=descricao,
                     link=dado['arquivo'],
                     data_sessao=dado['data']
                 )
                 pauta.save()
+                notificar = True
             except IntegrityError:
                 error = "Registro ja existente - %s" % dado['titulo']
                 print(error)
+
+        if notificar:
+            send.enviar(
+                "Nova Pauta disponível - %s" % (descricao),
+                'https://camaracolombo.com.br/pautas'
+            )
 
     def __urls():
         url_camara = 'http://www.camaracolombo.pr.gov.br'
