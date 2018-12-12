@@ -5,15 +5,18 @@ from tipo_solicitacao.models import TipoSolicitacao
 
 YEAR_CHOICES = []
 for r in range(1980, (datetime.datetime.now().year+1)):
-    YEAR_CHOICES.append((r,r))
+    YEAR_CHOICES.append((r, r))
+
 
 def current_year():
     return datetime.date.today().year
 
+
 class VereadorLink(models.Model):
     vereador = models.ForeignKey(
         Vereador,
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
+        related_name='links'
     )
     tipo = models.ForeignKey(
         TipoSolicitacao,
@@ -23,7 +26,7 @@ class VereadorLink(models.Model):
     ano = models.IntegerField(
         choices=YEAR_CHOICES,
         default=current_year,
-        null=True, 
+        null=True,
         blank=True
     )
 
