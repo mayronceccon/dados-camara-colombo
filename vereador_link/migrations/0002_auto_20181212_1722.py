@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='vereadorlink',
             name='vereador',
-            field=models.OneToOneField(default=django.utils.timezone.now, on_delete=django.db.models.deletion.CASCADE, to='vereador.Vereador'),
+            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='vereador.Vereador'),
             preserve_default=False,
         ),
     ]
