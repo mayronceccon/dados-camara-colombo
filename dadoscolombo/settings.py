@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'pauta',
     'vereador',
     'tipo_solicitacao',
+    'vereador_link',
 ]
 
 SITE_ID = 1
