@@ -11,11 +11,11 @@ def current_year():
     return datetime.date.today().year
 
 class VereadorLink(models.Model):
-    vereador = models.OneToOneField(
+    vereador = models.ForeignKey(
         Vereador,
         on_delete=models.PROTECT
     )
-    tipo = models.OneToOneField(
+    tipo = models.ForeignKey(
         TipoSolicitacao,
         on_delete=models.PROTECT
     )
