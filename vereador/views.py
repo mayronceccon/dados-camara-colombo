@@ -11,7 +11,13 @@ def index(request):
 
     if not data:
         jsonresponse = []
-        for vereador in Vereador.objects.all().order_by('nome'):
+        vereadores = Vereador.objects.all().order_by('nome')
+        for vereador in vereadores:
+            projetos = []
+            projetos.append({
+                'quantidade': vereador.projetos.count()
+            })
+
             jsonresponse.append({
                 "id": vereador.id,
                 "nome": vereador.nome,
@@ -20,7 +26,8 @@ def index(request):
                 "email": vereador.email,
                 "telefone_gabinete": vereador.telefone_gabinete,
                 "observacao": vereador.observacao,
-                "foto": vereador.get_absolute_image_url()
+                "foto": vereador.get_absolute_image_url(),
+                "projetos": projetos,
             })
         data = jsonresponse
         cache.set(cache_key, data, cache_time)

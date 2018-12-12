@@ -9,7 +9,8 @@ class ProjetoLei(models.Model):
     observacao = models.TextField()
     vereador = models.ForeignKey(
         Vereador,
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
+        related_name='projetos'
     )
     data_divulgacao = models.DateField(null=True, blank=True)
     data_aprovacao = models.DateField(null=True, blank=True)
