@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'pauta',
     'vereador',
+    'tipo_solicitacao',
 ]
 
 SITE_ID = 1
