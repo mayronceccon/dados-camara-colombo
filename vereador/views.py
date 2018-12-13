@@ -13,10 +13,9 @@ def index(request):
         jsonresponse = []
         vereadores = Vereador.objects.all().order_by('nome')
         for vereador in vereadores:
-            projetos = []
-            projetos.append({
+            projetos = {
                 'quantidade': vereador.projetos.count()
-            })
+            }
 
             jsonresponse.append({
                 "id": vereador.id,
