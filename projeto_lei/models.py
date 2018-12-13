@@ -3,6 +3,9 @@ from django.db import IntegrityError
 from vereador.models import Vereador
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
+from django.db.models import Q
+import re
+from datetime import datetime
 
 
 class ProjetoLei(models.Model):
@@ -69,7 +72,7 @@ class ProjetoLei(models.Model):
             projeto = projeto[0]
 
             assunto = tds[3].get_text().strip()
-            situacao = tds[4].get_text().strip()
+            situacao = str(tds[4])
 
             dados.append({
                 'protocolo': protocolo,
@@ -78,3 +81,63 @@ class ProjetoLei(models.Model):
                 'situacao': situacao
             })
         return dados
+
+    def remove_tupla(tuples):
+        tuples = [t for t in tuples if t]
+        return tuples
+
+    def ajusta_data(data):
+        if data is not None:
+            data = str(data).replace('/', '-')
+            data = datetime.strptime(data, '%d-%m-%Y')
+            return data
+        return None
+
+    def extrair_informacao():
+        projetos = ProjetoLei.objects.all().order_by('-projeto').exclude(
+            Q(data_aprovacao__isnull=False) | Q(data_arquivamento__isnull=False)
+        ).values()
+
+        for projeto in projetos:
+            observacao = projeto['observacao']
+            aprovado = ProjetoLei.ajusta_data(ProjetoLei.indentifica_aprovacao(observacao))
+            divulgado = ProjetoLei.ajusta_data(ProjetoLei.indentifica_divulgacao(observacao))
+            arquivado = ProjetoLei.ajusta_data(ProjetoLei.indentifica_arquivamento(observacao))
+
+            projeto_lei = ProjetoLei.objects.get(projeto=projeto['projeto'])
+            projeto_lei.data_divulgacao = divulgado
+            projeto_lei.data_aprovacao = aprovado
+            projeto_lei.data_arquivamento = arquivado
+            projeto_lei.save()
+
+    def indentifica_aprovacao(observacao):
+        regex1 = "(?:Aprovado<br\/>)([0-9]{2}\/[0-9]{2}\/[0-9]{4})"
+        regex2 = "([0-9]{2}\/[0-9]{2}\/[0-9]{4}) - Aprovado<br\/>"
+        regex3 = "Aprovado ([0-9]{2}\/[0-9]{2}\/[0-9]{4})"
+
+        regex = r"%s|%s|%s" % (regex1, regex2, regex3)
+
+        matches = re.findall(regex, observacao, re.IGNORECASE)
+        for match in matches:
+            return ProjetoLei.remove_tupla(match)[0]
+
+    def indentifica_divulgacao(observacao):
+        regex1 = "([0-9]{2}\/[0-9]{2}\/[0-9]{4}) - Divulgado"
+        regex2 = "Divulgado - ([0-9]{2}\/[0-9]{2}\/[0-9]{4})"
+
+        regex = r"%s|%s" % (regex1, regex2)
+
+        matches = re.findall(regex, observacao, re.IGNORECASE)
+        for match in matches:
+            return ProjetoLei.remove_tupla(match)[0]
+
+    def indentifica_arquivamento(observacao):
+        regex1 = "(?:Arquivado<br\/>)([0-9]{2}\/[0-9]{2}\/[0-9]{4})"
+        regex2 = "([0-9]{2}\/[0-9]{2}\/[0-9]{4})<br\/>Arquivado<br\/>"
+        regex3 = "Arquivado - ([0-9]{2}\/[0-9]{2}\/[0-9]{4})"
+
+        regex = r"%s|%s|%s" % (regex1, regex2, regex3)
+
+        matches = re.findall(regex, observacao, re.IGNORECASE)
+        for match in matches:
+            return ProjetoLei.remove_tupla(match)[0]
