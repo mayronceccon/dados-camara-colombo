@@ -89,7 +89,13 @@ class ProjetoLei(models.Model):
     def ajusta_data(data):
         if data is not None:
             data = str(data).replace('/', '-')
-            data = datetime.strptime(data, '%d-%m-%Y')
+            padrao_data = '%d-%m-%Y'
+
+            pattern = r"^[0-9]{2}-[0-9]{2}-[0-9]{2}$"
+            result = re.match(pattern, data)
+            if result is not None:
+                padrao_data = '%d-%m-%y'
+            data = datetime.strptime(data, padrao_data)
             return data
         return None
 
@@ -111,20 +117,21 @@ class ProjetoLei(models.Model):
             projeto_lei.save()
 
     def indentifica_aprovacao(observacao):
-        regex1 = "(?:Aprovado<br\/>)([0-9]{2}\/[0-9]{2}\/[0-9]{4})"
-        regex2 = "([0-9]{2}\/[0-9]{2}\/[0-9]{4}) - Aprovado<br\/>"
-        regex3 = "Aprovado ([0-9]{2}\/[0-9]{2}\/[0-9]{4})"
-
-        regex = r"%s|%s|%s" % (regex1, regex2, regex3)
+        observacao = observacao.replace('  ', ' ')
+        regex1 = "(?:Aprovado<br\/>)([0-9]{2}\/[0-9]{2}\/[0-9]{2,4})"
+        regex2 = "([0-9]{2}\/[0-9]{2}\/[0-9]{2,4}) - Aprovado"
+        regex3 = "Aprovado ([0-9]{2}\/[0-9]{2}\/[0-9]{2,4})"
+        regex4 = "Aprovado - ([0-9]{2}\/[0-9]{2}\/[0-9]{2,4})"
+        regex = r"%s|%s|%s|%s" % (regex1, regex2, regex3, regex4)
 
         matches = re.findall(regex, observacao, re.IGNORECASE)
         for match in matches:
             return ProjetoLei.remove_tupla(match)[0]
 
     def indentifica_divulgacao(observacao):
-        regex1 = "([0-9]{2}\/[0-9]{2}\/[0-9]{4}) - Divulgado"
-        regex2 = "Divulgado - ([0-9]{2}\/[0-9]{2}\/[0-9]{4})"
-
+        observacao = observacao.replace('  ', ' ')
+        regex1 = "([0-9]{2}\/[0-9]{2}\/[0-9]{2,4}) - Divulgado"
+        regex2 = "Divulgado - ([0-9]{2}\/[0-9]{2}\/[0-9]{2,4})"
         regex = r"%s|%s" % (regex1, regex2)
 
         matches = re.findall(regex, observacao, re.IGNORECASE)
@@ -132,11 +139,12 @@ class ProjetoLei(models.Model):
             return ProjetoLei.remove_tupla(match)[0]
 
     def indentifica_arquivamento(observacao):
-        regex1 = "(?:Arquivado<br\/>)([0-9]{2}\/[0-9]{2}\/[0-9]{4})"
-        regex2 = "([0-9]{2}\/[0-9]{2}\/[0-9]{4})<br\/>Arquivado<br\/>"
-        regex3 = "Arquivado - ([0-9]{2}\/[0-9]{2}\/[0-9]{4})"
-
-        regex = r"%s|%s|%s" % (regex1, regex2, regex3)
+        observacao = observacao.replace('  ', ' ')
+        regex1 = "(?:Arquivado<br\/>)([0-9]{2}\/[0-9]{2}\/[0-9]{2,4})"
+        regex2 = "([0-9]{2}\/[0-9]{2}\/[0-9]{4})<br\/>Arquivado"
+        regex3 = "Arquivado - ([0-9]{2}\/[0-9]{2}\/[0-9]{2,4})"
+        regex4 = "([0-9]{2}\/[0-9]{2}\/[0-9]{2,4}) - Arquivado"
+        regex = r"%s|%s|%s|%s" % (regex1, regex2, regex3, regex4)
 
         matches = re.findall(regex, observacao, re.IGNORECASE)
         for match in matches:
