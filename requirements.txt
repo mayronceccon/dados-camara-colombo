@@ -4,6 +4,7 @@ chardet==3.0.4
 Django==2.0.8
 django-cors-headers==2.4.0
 django-environ==0.4.5
+django-multiselectfield==0.1.8
 html5lib==1.0.1
 idna==2.7
 onesignal-notifications==0.2.2
