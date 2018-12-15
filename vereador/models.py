@@ -22,9 +22,10 @@ class Vereador(models.Model):
     observacao = models.TextField(null=True, blank=True)
     foto = models.ImageField(upload_to=content_file_name, null=True, blank=True)
     cadastro = models.DateTimeField(auto_now_add=True)
+    ativo = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.nome
+        return "%s (%s)" % (self.nome, self.apelido)
 
     def get_absolute_image_url(self):
         try:
