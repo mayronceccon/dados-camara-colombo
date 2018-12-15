@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.sites',
     'corsheaders',
+    'multiselectfield',
     'pauta',
     'vereador',
     'tipo_solicitacao',

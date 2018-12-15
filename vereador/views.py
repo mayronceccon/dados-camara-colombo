@@ -9,12 +9,17 @@ def index(request):
     cache_time = (60 * 60 * 23)
     data = cache.get(cache_key)
 
-    if not data:
+    if True:
         jsonresponse = []
         vereadores = Vereador.objects.all().order_by('nome')
         for vereador in vereadores:
             projetos = {
                 'quantidade': vereador.projetos.count()
+            }
+
+            legislaturas = {
+                'quantidade': len(vereador.legislaturas),
+                'anos': vereador.legislaturas
             }
 
             jsonresponse.append({
@@ -27,6 +32,7 @@ def index(request):
                 "observacao": vereador.observacao,
                 "foto": vereador.get_absolute_image_url(),
                 "projetos": projetos,
+                "legislaturas": legislaturas
             })
         data = jsonresponse
         cache.set(cache_key, data, cache_time)

@@ -5,12 +5,18 @@ from django.template.defaultfilters import slugify
 from django.core.cache import cache
 import os
 import uuid
+import datetime
+from multiselectfield import MultiSelectField
 
 
 def content_file_name(instance, filename):
     ext = filename.split('.')[-1]
     filename = "%s_%s.%s" % (uuid.uuid4(), slugify(instance.__str__()), ext)
     return os.path.join("vereador/", filename)
+
+YEAR_CHOICES = []
+for r in range(1995, (datetime.datetime.now().year+5)):
+    YEAR_CHOICES.append((str(r), str(r)))
 
 
 class Vereador(models.Model):
@@ -23,6 +29,9 @@ class Vereador(models.Model):
     foto = models.ImageField(upload_to=content_file_name, null=True, blank=True)
     cadastro = models.DateTimeField(auto_now_add=True)
     ativo = models.BooleanField(default=True)
+    legislaturas = MultiSelectField(
+        choices=YEAR_CHOICES
+    )
 
     def __str__(self):
         return "%s (%s)" % (self.nome, self.apelido)
