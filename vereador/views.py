@@ -9,7 +9,7 @@ def index(request):
     cache_time = (60 * 60 * 23)
     data = cache.get(cache_key)
 
-    if True:
+    if not data:
         jsonresponse = []
         vereadores = Vereador.objects.all().order_by('nome')
         for vereador in vereadores:
