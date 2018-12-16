@@ -1,0 +1,22 @@
+language: python
+python: 
+  - "3.6" 
+virtualenv:
+  system_site_packages: true
+install:
+  - pip install -r requirements.txt
+cache:
+  directories:
+  - venv
+notifications:
+  email:
+    recipients:
+      - mayron.ceccon@gmail.com
+    on_success: always
+    on_failure: always
+addons:
+  apt:
+    packages:
+      - sshpass
+after_success:
+  - sshpass -p ${pass_scp} ssh -o StrictHostKeyChecking=no ${user_scp}@${server_scp} "cd /home/${user_scp}/dados-camara-colombo && sh deploy.sh"
