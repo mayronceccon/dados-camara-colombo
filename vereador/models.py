@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.sites.models import Site
 from django.template.defaultfilters import slugify
 from django.core.cache import cache
+from django.db.models import Q
 import os
 import uuid
 import datetime
@@ -46,3 +47,7 @@ class Vereador(models.Model):
         cache_key = 'vereador_list'
         cache.delete(cache_key)
         super(Vereador, self).save(*args, **kwargs)
+
+    def buscar_nome(nome):
+        vereador = Vereador.objects.filter(Q(nome__istartswith=nome))
+        return vereador.first()
