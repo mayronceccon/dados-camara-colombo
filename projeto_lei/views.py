@@ -37,6 +37,11 @@ def salvar(request):
     return JsonResponse([], safe=False)
 
 
+def salvar_em_tramite(request):
+    ProjetoLei.buscar_dados_em_tramite()
+    return JsonResponse([], safe=False)
+
+
 def extrair_info(request):
     ProjetoLei.extrair_informacao()
     return JsonResponse([], safe=False)

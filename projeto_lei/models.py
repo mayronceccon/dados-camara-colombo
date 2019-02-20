@@ -10,9 +10,9 @@ from datetime import datetime
 
 class ProjetoLei(models.Model):
     projeto = models.IntegerField(unique=True)
-    protocolo = models.IntegerField(unique=True)
+    protocolo = models.IntegerField(null=True, blank=True)
     assunto = models.TextField()
-    observacao = models.TextField()
+    observacao = models.TextField(null=True, blank=True)
     vereador = models.ForeignKey(
         Vereador,
         on_delete=models.PROTECT,
@@ -48,6 +48,78 @@ class ProjetoLei(models.Model):
                         projeto_lei.save()
                         error = "Projeto ja existente - %s" % dado['projeto']
                         print(error)
+
+    def buscar_dados_em_tramite():
+        link = 'http://www.camaracolombo.pr.gov.br/projetos_legislativo1.asp'
+        dados = ProjetoLei.buscar_html_em_tramite(link)
+        for dado in dados:
+
+            if (dado['vereador'] == 'Anderson da Silva'):
+                dado['vereador'] = 'Anderson Ferreira da Silva'
+
+            if (dado['vereador'] == 'Dolíria Strapasson'):
+                dado['vereador'] = 'Dolíria Londregue Strapasson'
+
+            if (dado['vereador'] == 'Marcos Antonio da Silva'):
+                dado['vereador'] = 'Marcos Antônio da Silva'
+
+            vereador = Vereador.buscar_nome(dado['vereador'])
+            if (vereador is None):
+                continue
+
+            try:
+                projeto_lei = ProjetoLei(
+                    projeto=dado['projeto'],
+                    protocolo=dado['protocolo'],
+                    assunto=dado['assunto'],
+                    observacao=dado['situacao'],
+                    vereador=vereador
+                )
+                projeto_lei.save()
+            except IntegrityError:
+                projeto_lei = ProjetoLei.objects.get(projeto=dado['projeto'])
+                projeto_lei.observacao = dado['situacao']
+                projeto_lei.save()
+                error = "Projeto ja existente - %s" % dado['projeto']
+                print(error)
+
+    def buscar_html_em_tramite(link):
+        html = urlopen(link)
+        res = BeautifulSoup(html.read(), "html5lib")
+
+        tables = res.find_all(
+            "table",
+            {
+                "id": "table48"
+            }
+        )
+
+        dados = []
+        for table in tables:
+            tds = table.find_all(
+                "td"
+            )
+
+            protocolo = None
+
+            projeto = tds[0].get_text().strip()
+            projeto = projeto.split('/')
+            projeto = projeto[0]
+
+            vereador = tds[2].get_text().strip()
+
+            assunto = tds[3].get_text().strip()
+            situacao = str(tds[4])
+
+            dados.append({
+                'protocolo': protocolo,
+                'projeto': projeto,
+                'assunto': assunto,
+                'situacao': situacao,
+                'vereador': vereador
+            })
+        return dados
+
 
     def buscar_html(link):
         html = urlopen(link)
