@@ -83,6 +83,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': env('SQLITE_URL'),
+        'TEST': {
+            'NAME': 'test.sqlite3',
+        },
     }
 }
 

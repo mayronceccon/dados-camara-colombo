@@ -4,25 +4,25 @@ from tika import parser
 import re
 
 def indicacao_numero(indicacao):
-    regex = r"((?:N°:\s)([0-9]{1,})(?:\sAutor))"
+    regex = r"((?:N°[:]?\s)([0-9]{1,})(?:\sAutor))"
     matches = re.search(regex, indicacao)
     if matches is not None:
         return matches.group(2)
 
 def indicacao_autor(indicacao):
-    regex = r"((?:Autor:\s|Autora:\s)(.*)(?:\sDestinatário))"
+    regex = r"((?:Autor[:]?\s|Autora[:]?\s)(.*)(?:\sDestinatário))"
     matches = re.search(regex, indicacao)
     if matches is not None:
         return matches.group(2)
 
 def indicacao_destinatario(indicacao):
-    regex = r"((?:Destinatário:\s)(.*)(?:\sAssunto:))"
+    regex = r"((?:Destinatário[:]?\s)(.*)(?:\sAssunto:))"
     matches = re.search(regex, indicacao)
     if matches is not None:
         return matches.group(2)
 
 def indicacao_assunto(indicacao):
-    regex = r"((?:Assunto:\s)(.*))"
+    regex = r"((?:Assunto[:]?\s)(.*))"
     matches = re.search(regex, indicacao)
     if matches is not None:
         return matches.group(2)
