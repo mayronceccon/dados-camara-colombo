@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'vereador_link',
     'projeto_lei',
     'executor',
+    'indicacao',
 ]
 
 SITE_ID = 1
