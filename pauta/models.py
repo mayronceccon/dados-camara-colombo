@@ -13,6 +13,10 @@ class Pauta(models.Model):
     link = models.URLField(unique=True, max_length=500)
     data_sessao = models.DateField()
     cadastro = models.DateTimeField(auto_now_add=True)
+    indicacao_exportada = models.BooleanField(
+        default=False,
+        verbose_name=u'Indicacoes Exportadas'
+    )
 
     def __str__(self):
         return self.descricao
