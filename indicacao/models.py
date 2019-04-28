@@ -1,5 +1,6 @@
 from django.db import models
 from django.db import IntegrityError
+from django.db.models import Q
 from pauta.models import Pauta
 from executor.models import Executor
 from vereador.models import Vereador
@@ -18,7 +19,9 @@ class Indicacao(models.Model):
     vereador = models.ForeignKey(
         Vereador,
         on_delete=models.PROTECT,
-        related_name='indicacoes'
+        related_name='indicacoes',
+        blank=True,
+        null=True
     )
 
     destinatario = models.ForeignKey(
@@ -64,6 +67,13 @@ class Indicacao(models.Model):
                 numero = Indicacao.indicacao_numero(match)
 
                 if numero is None:
+                    continue
+
+                numero_cadastrado = Indicacao.objects.filter(
+                    Q(numero=numero) & Q(pauta=pauta)
+                )
+
+                if numero_cadastrado:
                     continue
 
                 autor = Indicacao.indicacao_autor(match)
