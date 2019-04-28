@@ -27,11 +27,14 @@ class Indicacao(models.Model):
         related_name='indicacoes'
     )
 
-    numero = models.IntegerField(unique=True)
+    numero = models.IntegerField()
     assunto = models.TextField(null=True, blank=True)
 
     def __str__(self):
         return str(self.numero)
+
+    class Meta:
+        unique_together = ('numero', 'pauta')
 
     def buscar_indicacoes():
         pautas = Pauta.objects.all().filter(indicacao_exportada=False)
