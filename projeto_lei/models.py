@@ -63,7 +63,7 @@ class ProjetoLei(models.Model):
             if (dado['vereador'] == 'Marcos Antonio da Silva'):
                 dado['vereador'] = 'Marcos Antônio da Silva'
 
-            vereador = Vereador.buscar_nome(dado['vereador'])
+            vereador = Vereador.objects.buscar_nome(dado['vereador'])
             if (vereador is None):
                 continue
 

@@ -75,7 +75,3 @@ class Vereador(models.Model):
         cache_key = 'vereador_list'
         cache.delete(cache_key)
         super(Vereador, self).save(*args, **kwargs)
-
-    # def buscar_nome(nome):
-    #     vereador = Vereador.objects.filter(Q(nome_convert__istartswith=nome))
-    #     return vereador.first()
