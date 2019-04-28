@@ -11,16 +11,32 @@ def index(request):
     # 23 horas
     cache_time = (60 * 60 * 23)
     data = cache.get(cache_key)
-    data = None
 
     if not data:
         jsonresponse = []
         for indicacao in Indicacao.objects.all().order_by('-numero'):
+            vereador = None
+            if indicacao.vereador:
+                vereador = {
+                    "id": indicacao.vereador.id,
+                    "nome": indicacao.vereador.nome,
+                    "apelido": indicacao.vereador.apelido
+                }
+
             jsonresponse.append({
                 "id": indicacao.id,
-                "vereador": indicacao.vereador,
                 "numero": indicacao.numero,
-                "assunto": indicacao.assunto
+                "assunto": indicacao.assunto,
+                "pauta": {
+                    "id": indicacao.pauta.id,
+                    "data": indicacao.pauta.data_sessao,
+                    "descricao": indicacao.pauta.descricao
+                },
+                "destinatario": {
+                    "id": indicacao.destinatario.id,
+                    "descricao": indicacao.destinatario.nome
+                },
+                "vereador": vereador
             })
         data = jsonresponse
         cache.set(cache_key, data, cache_time)
