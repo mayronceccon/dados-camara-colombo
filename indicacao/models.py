@@ -45,14 +45,14 @@ class Indicacao(models.Model):
     def buscar_indicacoes():
         pautas = Pauta.objects.all().filter(indicacao_exportada=False)
         for pauta in pautas:
-            # try:
-            #     Indicacao.buscar_dados(pauta)
-            #     pauta.indicacao_exportada = True
-            #     pauta.save()
-            # except IntegrityError:
-            #     print('Algum erro')
-            #     pass
-            Indicacao.buscar_dados(pauta)
+            try:
+                Indicacao.buscar_dados(pauta)
+                pauta.indicacao_exportada = True
+                pauta.save()
+            except IntegrityError:
+                print('Algum erro')
+                pass
+            # Indicacao.buscar_dados(pauta)
 
         return True
 
@@ -81,9 +81,8 @@ class Indicacao(models.Model):
                 autor = autor.split("(")
                 autor = autor[0].strip()
 
-                print(autor)            
+                vereador = Vereador.objects.buscar_nome(autor)
 
-                vereador = Vereador.buscar_nome(autor)
                 obj, created = Executor.objects.get_or_create(
                     nome=destinatario
                 )

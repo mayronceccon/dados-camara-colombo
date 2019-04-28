@@ -23,7 +23,7 @@ class IndicacaoTestCase(TestCase):
         )
 
         Vereador.objects.create(
-            nome="Vagner Brandão",
+            nome="Vagner Brandao",
             apelido="Vagner da Viação",
         )
 
