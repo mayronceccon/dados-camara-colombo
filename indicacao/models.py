@@ -4,17 +4,8 @@ from pauta.models import Pauta
 from executor.models import Executor
 from vereador.models import Vereador
 from tika import parser
+from lib.util.string import sanitize
 import re
-import unicodedata
-
-
-def removerAcentosECaracteresEspeciais(palavra):
-    # Unicode normalize transforma um caracter em seu equivalente em latin.
-    nfkd = unicodedata.normalize('NFKD', palavra)
-    palavraSemAcento = u"".join([c for c in nfkd if not unicodedata.combining(c)])
-
-    # Usa expressão regular para retornar a palavra apenas com números, letras e espaço
-    return re.sub('[^a-zA-Z0-9 \\\]', ' ', palavraSemAcento)
 
 
 class Indicacao(models.Model):
@@ -52,7 +43,6 @@ class Indicacao(models.Model):
             except IntegrityError:
                 print('Algum erro')
                 pass
-            # Indicacao.buscar_dados(pauta)
 
         return True
 
@@ -75,7 +65,7 @@ class Indicacao(models.Model):
 
                 autor = Indicacao.indicacao_autor(match)
                 destinatario = Indicacao.indicacao_destinatario(match)
-                destinatario = removerAcentosECaracteresEspeciais(destinatario).upper()
+                destinatario = sanitize(destinatario).upper()
                 assunto = Indicacao.indicacao_assunto(match)
 
                 autor = autor.split("(")

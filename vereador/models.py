@@ -10,28 +10,20 @@ import datetime
 from multiselectfield import MultiSelectField
 import unicodedata
 import re
-
-
-def removerAcentosECaracteresEspeciais(palavra):
-    # Unicode normalize transforma um caracter em seu equivalente em latin.
-    nfkd = unicodedata.normalize('NFKD', palavra)
-    palavraSemAcento = u"".join([c for c in nfkd if not unicodedata.combining(c)])
-
-    # Usa expressão regular para retornar a palavra apenas com números, letras e espaço
-    return re.sub('[^a-zA-Z0-9 \\\]', ' ', palavraSemAcento)
+from lib.util.string import sanitize
 
 
 class VereadorManager(models.Manager):
     def buscar_nome(self, nome):
         vereadores = Vereador.objects.all()
 
-        nome = removerAcentosECaracteresEspeciais(nome)
+        nome = sanitize(nome)
         for vereador in vereadores:
-            nome_vereador = removerAcentosECaracteresEspeciais(vereador.nome)
+            nome_vereador = sanitize(vereador.nome)
             if (nome_vereador == nome):
                 return vereador
 
-            apelido_vereador = removerAcentosECaracteresEspeciais(vereador.apelido)
+            apelido_vereador = sanitize(vereador.apelido)
             if (apelido_vereador == nome):
                 return vereador
         return None
