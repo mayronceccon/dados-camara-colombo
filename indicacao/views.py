@@ -1,9 +1,19 @@
-from django.shortcuts import render
-from django.http import JsonResponse, HttpResponse
+import json
+
 from django.core import serializers
 from django.core.cache import cache
+from django.http import HttpResponse, JsonResponse
+from django.shortcuts import render
+from rest_framework import viewsets
+
 from .models import Indicacao
-import json
+from .serializers import IndicacaoSerializer
+
+
+class IndicacaoViewSet(viewsets.ModelViewSet):
+    queryset = Indicacao.objects.all().order_by('-numero')
+    serializer_class = IndicacaoSerializer
+    http_method_names = ['get']
 
 
 def index(request):

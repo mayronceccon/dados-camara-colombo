@@ -5,6 +5,15 @@ from django.core.cache import cache
 from .models import Pauta
 import json
 
+from rest_framework import viewsets
+from .serializers import PautaSerializer
+
+
+class PautaViewSet(viewsets.ModelViewSet):
+    queryset = Pauta.objects.all().order_by('-data_sessao')
+    serializer_class = PautaSerializer
+    http_method_names = ['get']
+
 
 def index(request):
     cache_key = 'pauta_list'
