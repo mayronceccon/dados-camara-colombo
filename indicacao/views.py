@@ -1,4 +1,5 @@
 import json
+import datetime
 
 from django.core import serializers
 from django.core.cache import cache
@@ -8,6 +9,7 @@ from rest_framework import viewsets
 
 from .models import Indicacao
 from .serializers import IndicacaoSerializer
+from .services import IndicacaoServices
 
 
 class IndicacaoViewSet(viewsets.ModelViewSet):
@@ -55,5 +57,9 @@ def index(request):
 
 
 def buscar_indicacoes(request):
-    dados = Indicacao.buscar_indicacoes()
-    return JsonResponse(dados, safe=False)
+    services = IndicacaoServices()
+    services.buscar_indicacoes()
+    return JsonResponse(
+        datetime.datetime.now(),
+        safe=False
+    )

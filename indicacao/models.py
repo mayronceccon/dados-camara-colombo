@@ -1,12 +1,8 @@
 from django.db import models
-from django.db import IntegrityError
-from django.db.models import Q
-from pauta.models import Pauta
+
 from executor.models import Executor
+from pauta.models import Pauta
 from vereador.models import Vereador
-from tika import parser
-from lib.util.string import sanitize
-import re
 
 
 class Indicacao(models.Model):
@@ -38,87 +34,3 @@ class Indicacao(models.Model):
 
     class Meta:
         unique_together = ('numero', 'pauta')
-
-    def buscar_indicacoes():
-        pautas = Pauta.objects.all().filter(indicacao_exportada=False)
-        for pauta in pautas:
-            try:
-                Indicacao.buscar_dados(pauta)
-                pauta.indicacao_exportada = True
-                pauta.save()
-            except IntegrityError:
-                print('Algum erro')
-                pass
-
-        return True
-
-    def buscar_dados(pauta):
-        url = pauta.link
-        raw = parser.from_file(url)
-
-        content = raw['content']
-        content = content.strip().rstrip('\r\n').replace("\n", "").replace("\r", "").replace("  ", " ")
-        content = content.strip().rstrip('\r\n').replace("\n", "").replace("\r", "").replace("  ", " ")
-
-        regex = r"(?:cação\s)(.*?)(?:\sIndi|\sColombo, [0-9]{1,2} de|\sTribuna Livre)"
-        matches = re.findall(regex, content)
-        if matches is not None:
-            for match in matches:
-                numero = Indicacao.indicacao_numero(match)
-
-                if numero is None:
-                    continue
-
-                numero_cadastrado = Indicacao.objects.filter(
-                    Q(numero=numero) & Q(pauta=pauta)
-                )
-
-                if numero_cadastrado:
-                    continue
-
-                autor = Indicacao.indicacao_autor(match)
-                destinatario = Indicacao.indicacao_destinatario(match)
-                destinatario = sanitize(destinatario).upper()
-                assunto = Indicacao.indicacao_assunto(match)
-
-                autor = autor.split("(")
-                autor = autor[0].strip()
-
-                vereador = Vereador.objects.buscar_nome(autor)
-
-                obj, created = Executor.objects.get_or_create(
-                    nome=destinatario
-                )
-
-                indicacao = Indicacao(
-                    pauta=pauta,
-                    vereador=vereador,
-                    destinatario=obj,
-                    numero=numero,
-                    assunto=assunto
-                )
-                indicacao.save()
-
-    def indicacao_numero(indicacao):
-        regex = r"((?:N°[:]?\s)([0-9]{1,}?)(?:\sAutor|Autora))"
-        matches = re.search(regex, indicacao)
-        if matches is not None:
-            return matches.group(2)
-
-    def indicacao_autor(indicacao):
-        regex = r"((?:Autor[:]?\s|Autora[:]?\s)(.*?)(?:\sDestinatário))"
-        matches = re.search(regex, indicacao)
-        if matches is not None:
-            return matches.group(2)
-
-    def indicacao_destinatario(indicacao):
-        regex = r"((?:Destinatário[:]?\s)(.*?)(?:\sAssunto:))"
-        matches = re.search(regex, indicacao)
-        if matches is not None:
-            return matches.group(2)
-
-    def indicacao_assunto(indicacao):
-        regex = r"((?:Assunto[:]?\s)(.*))"
-        matches = re.search(regex, indicacao)
-        if matches is not None:
-            return matches.group(2)
