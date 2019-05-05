@@ -10,12 +10,14 @@ from indicacao.views import IndicacaoViewSet
 from pauta.views import PautaViewSet
 from vereador.views import VereadorViewSet
 from projeto_lei.views import ProjetoLeiViewSet
+from executor.views import ExecutorViewSet
 
 router = routers.DefaultRouter()
 router.register(r'indicacoes', IndicacaoViewSet)
 router.register(r'pautas', PautaViewSet)
 router.register(r'vereadores', VereadorViewSet)
 router.register(r'projetos', ProjetoLeiViewSet)
+router.register(r'executores', ExecutorViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
