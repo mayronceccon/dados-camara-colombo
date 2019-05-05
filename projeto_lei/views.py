@@ -1,7 +1,17 @@
-from django.shortcuts import render
-from django.http import JsonResponse
 from django.core.cache import cache
+from django.http import JsonResponse
+from django.shortcuts import render
+
+from rest_framework import viewsets
+
 from .models import ProjetoLei
+from .serializers import ProjetoLeiSerializer
+
+
+class ProjetoLeiViewSet(viewsets.ModelViewSet):
+    queryset = ProjetoLei.objects.all().order_by('-projeto')
+    serializer_class = ProjetoLeiSerializer
+    http_method_names = ['get']
 
 
 def index(request):

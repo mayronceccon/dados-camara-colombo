@@ -9,11 +9,13 @@ from rest_framework import routers
 from indicacao.views import IndicacaoViewSet
 from pauta.views import PautaViewSet
 from vereador.views import VereadorViewSet
+from projeto_lei.views import ProjetoLeiViewSet
 
 router = routers.DefaultRouter()
 router.register(r'indicacoes', IndicacaoViewSet)
 router.register(r'pautas', PautaViewSet)
 router.register(r'vereadores', VereadorViewSet)
+router.register(r'projetos', ProjetoLeiViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
