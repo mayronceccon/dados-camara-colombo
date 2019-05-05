@@ -8,10 +8,12 @@ from rest_framework import routers
 
 from indicacao.views import IndicacaoViewSet
 from pauta.views import PautaViewSet
+from vereador.views import VereadorViewSet
 
 router = routers.DefaultRouter()
 router.register(r'indicacoes', IndicacaoViewSet)
 router.register(r'pautas', PautaViewSet)
+router.register(r'vereadores', VereadorViewSet)
 
 urlpatterns = [
     path('api/', include(router.urls)),
