@@ -13,7 +13,7 @@ from .services import IndicacaoServices
 
 
 class IndicacaoViewSet(viewsets.ModelViewSet):
-    queryset = Indicacao.objects.all().order_by('-numero')
+    queryset = Indicacao.objects.all().order_by('-pauta__data_sessao', '-numero')
     serializer_class = IndicacaoSerializer
     http_method_names = ['get']
 
