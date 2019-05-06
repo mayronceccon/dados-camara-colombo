@@ -22,7 +22,6 @@ router.register(r'executores', ExecutorViewSet)
 urlpatterns = [
     path('api/', include(router.urls)),
     path('pautas/', include('pauta.urls')),
-    path('vereadores/', include('vereador.urls')),
     path('projetos_lei/', include('projeto_lei.urls')),
     path('indicacoes/', include('indicacao.urls')),
     url(r'^api-auth/', include('rest_framework.urls')),
