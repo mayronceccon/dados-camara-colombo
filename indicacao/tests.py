@@ -2,6 +2,7 @@ from django.test import TestCase
 from .models import Indicacao
 from .models import Pauta
 from .models import Vereador
+from .services import IndicacaoServices
 
 
 class IndicacaoTestCase(TestCase):
@@ -59,5 +60,48 @@ class IndicacaoTestCase(TestCase):
         )
 
     def test_buscar_indicacoes_por_pauta(self):
-        indicacoes = Indicacao.buscar_indicacoes()
+        # service = IndicacaoServices()
+        # indicacoes = service.buscar_indicacoes()
         self.assertTrue(True)
+
+    def test_limpar_conteudo(self):
+        string = """
+           Indicação
+           N°:222
+           Autor:Renato Lunardon
+           Destinatário: Secretaria de Urbanismo
+           Assunto: Venho  solicitar  ao  setor  competente a
+           viabilidade  de  construçãode  uma travessia
+           elevada na  Rua Vereador  Angelim  Walesko  frente  ao  número  351,
+           paralelas às  Ruas  Angelina Cavalli e Luiz Gasparin,
+           no bairro Jardim Eucaliptos, neste município.
+         
+           Tribuna Livre: Darci Martins Braga. Assunto: COMESP –
+           Consórcio Metropolitano de Saúde do Paraná.
+        """
+
+        service = IndicacaoServices()
+        conteudo_limpo = service._limpar_conteudo(string)
+
+        expected = """Indicação   N°:222   Autor:Renato Lunardon   Destinatário: Secretaria de Urbanismo   Assunto: Venho solicitar ao setor competente a   viabilidade de construçãode uma travessia   elevada na Rua Vereador Angelim Walesko frente ao número 351,   paralelas às Ruas Angelina Cavalli e Luiz Gasparin,   no bairro Jardim Eucaliptos, neste município.     Tribuna Livre: Darci Martins Braga. Assunto: COMESP –   Consórcio Metropolitano de Saúde do Paraná."""
+
+        self.assertEqual(expected.lstrip(), conteudo_limpo.lstrip())
+
+    def test_recuperar_dados_lista(self):
+        conteudo_limpo = """Indicação   N°:222   Autor:Renato Lunardon   Destinatário: Secretaria de Urbanismo   Assunto: Venho solicitar ao setor competente a   viabilidade de construçãode uma travessia   elevada na Rua Vereador Angelim Walesko frente ao número 351,   paralelas às Ruas Angelina Cavalli e Luiz Gasparin,   no bairro Jardim Eucaliptos, neste município.     Tribuna Livre: Darci Martins Braga. Assunto: COMESP –   Consórcio Metropolitano de Saúde do Paraná."""
+
+        service = IndicacaoServices()
+        dados_lista = service._recuperar_dados_lista(conteudo_limpo.lstrip())
+
+        expected = ['  N°:222   Autor:Renato Lunardon   Destinatário: Secretaria de Urbanismo   Assunto: Venho solicitar ao setor competente a   viabilidade de construçãode uma travessia   elevada na Rua Vereador Angelim Walesko frente ao número 351,   paralelas às Ruas Angelina Cavalli e Luiz Gasparin,   no bairro Jardim Eucaliptos, neste município.    ']
+
+        self.assertEqual(expected, dados_lista)
+
+    # def test_identificar_dados(self):
+    #     dados = '  N°:222   Autor:Renato Lunardon   Destinatário: Secretaria de Urbanismo   Assunto: Venho solicitar ao setor competente a   viabilidade de construçãode uma travessia   elevada na Rua Vereador Angelim Walesko frente ao número 351,   paralelas às Ruas Angelina Cavalli e Luiz Gasparin,   no bairro Jardim Eucaliptos, neste município.    '
+
+    #     service = IndicacaoServices()
+    #     numero = service._indicacao_numero(dados)
+    #     print(numero)
+
+    #     self.assertEqual(222, numero)
