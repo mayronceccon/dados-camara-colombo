@@ -34,7 +34,7 @@ class IndicacaoServices:
 
     def buscar_dados(self):
         pauta = self._pauta
-        content = self._recuperar_conteudo()
+        content = self._recuperar_conteudo(pauta.link)
         matches = self._recuperar_dados_lista(content)
 
         if matches is None:
@@ -63,8 +63,8 @@ class IndicacaoServices:
                 assunto=assunto
             )
 
-    def _recuperar_conteudo(self):
-        raw = parser.from_file(self._pauta.link)
+    def _recuperar_conteudo(self, link):
+        raw = parser.from_file(link)
         conteudo = self._limpar_conteudo(raw['content'])
         return conteudo
 
@@ -111,26 +111,28 @@ class IndicacaoServices:
         return re.findall(regex, content)
 
     def _indicacao_numero(self, indicacao):
-        regex = r"((?:N°[:]?\s)([0-9]{1,}?)(?:\sAutor|Autora))"
-        matches = re.search(regex, indicacao)
+        regex = r"((?:N°[:]?[\s]?)([0-9]{1,})((?:\s{0,}Autor|Autora)))"
+        matches = re.search(regex, indicacao.lstrip())
         if matches is not None:
-            return matches.group(2)
+            return int(matches.group(2))
 
     def _indicacao_autor(self, indicacao):
-        regex = r"((?:Autor[:]?\s|Autora[:]?\s)(.*?)(?:\sDestinatário))"
+        regex = r"((?:Autor[a]{0,}[:]?\s{0,})(.*?)(?:\s{0,}Destinatário))"
         matches = re.search(regex, indicacao)
         if matches is not None:
-            autor = matches.group(2).split("(")[0].strip()
-            return autor
+            autor = matches.group(2).split("(")[0].strip().lstrip()
+            return self._limpar_conteudo(autor)
 
     def _indicacao_destinatario(self, indicacao):
         regex = r"((?:Destinatário[:]?\s)(.*?)(?:\sAssunto:))"
         matches = re.search(regex, indicacao)
         if matches is not None:
-            return sanitize(matches.group(2)).upper()
+            destinatario = sanitize(matches.group(2)).upper()
+            return self._limpar_conteudo(destinatario)
 
     def _indicacao_assunto(self, indicacao):
         regex = r"((?:Assunto[:]?\s)(.*))"
         matches = re.search(regex, indicacao)
         if matches is not None:
-            return matches.group(2)
+            assunto = matches.group(2).lstrip()
+            return self._limpar_conteudo(assunto)
