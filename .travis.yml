@@ -1,14 +1,16 @@
 language: python
 python: 
   - "3.6"
-env:
-  - DB=sqlite3
+branches:
+  only:
+    - master
 install:
   - pip install -r requirements.txt
-before_script:
-  - python manage.py migrate --no-input
+# before_script:
+#   - python manage.py migrate --no-input
 script:
-  - python manage.py test
+  - python --version
+  #- python manage.py test
 notifications:
   email:
     recipients:
