@@ -81,21 +81,21 @@ WSGI_APPLICATION = 'dadoscolombo.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': env('SQLITE_URL'),
-        'TEST': {
-            'NAME': 'test.sqlite3',
-        },
-    },
     # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': env('DB_NAME'),
-    #     'USER': env('DB_USER'),
-    #     'PASSWORD': env('DB_PASSWORD'),
-    #     'HOST': env('DB_HOST'),
-    #     'PORT': '3306',
-    # }
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': env('SQLITE_URL'),
+    #     'TEST': {
+    #         'NAME': 'test.sqlite3',
+    #     },
+    # },
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': '3306',
+    }
 }
 
 
