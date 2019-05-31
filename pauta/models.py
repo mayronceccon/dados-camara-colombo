@@ -10,7 +10,7 @@ from lib.notificacao import send
 
 class Pauta(models.Model):
     descricao = models.CharField(max_length=100)
-    link = models.URLField(unique=True, max_length=500)
+    link = models.URLField(unique=True)
     data_sessao = models.DateField()
     cadastro = models.DateTimeField(auto_now_add=True)
     indicacao_exportada = models.BooleanField(

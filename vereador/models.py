@@ -13,6 +13,12 @@ import re
 from lib.util.string import sanitize
 
 
+class PatchedMultiSelectField(MultiSelectField):
+    def value_to_string(self, obj):
+        value = self.value_from_object(obj)
+        return self.get_prep_value(value)
+
+
 class VereadorManager(models.Manager):
     def buscar_nome(self, nome):
         vereadores = Vereador.objects.all()
@@ -49,7 +55,7 @@ class Vereador(models.Model):
     foto = models.ImageField(upload_to=content_file_name, null=True, blank=True)
     cadastro = models.DateTimeField(auto_now_add=True)
     ativo = models.BooleanField(default=True)
-    legislaturas = MultiSelectField(
+    legislaturas = PatchedMultiSelectField(
         choices=YEAR_CHOICES
     )
     objects = VereadorManager()
