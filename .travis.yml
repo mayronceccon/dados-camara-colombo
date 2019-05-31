@@ -1,6 +1,10 @@
 language: python
 python: 
   - "3.6"
+env:
+  - SECRET_KEY=${SECRET_KEY}
+  - SQLITE_URL=db.sqlite3
+  - STATIC_ROOT=static/
 install:
   - pip install -r requirements.txt
 before_script:
