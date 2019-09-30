@@ -2,7 +2,7 @@ autopep8==1.4.4
 beautifulsoup4==4.6.1
 certifi==2018.11.29
 chardet==3.0.4
-Django==2.2
+Django==2.2.5
 django-cors-headers==2.4.0
 django-environ==0.4.5
 django-filter==2.1.0
