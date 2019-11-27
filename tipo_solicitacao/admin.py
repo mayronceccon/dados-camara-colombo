@@ -7,4 +7,5 @@ class TipoSolicitacaoAdmin(admin.ModelAdmin):
     fields = ('nome',)
     list_display = ['nome']
 
+
 admin.site.register(TipoSolicitacao, TipoSolicitacaoAdmin)

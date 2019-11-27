@@ -69,8 +69,10 @@ class IndicacaoServices:
         return conteudo
 
     def _limpar_conteudo(self, conteudo):
-        conteudo = conteudo.strip().rstrip('\r\n').replace("\n", "").replace("\r", "").replace("  ", " ")
-        conteudo = conteudo.strip().rstrip('\r\n').replace("\n", "").replace("\r", "").replace("  ", " ")
+        conteudo = conteudo.strip().rstrip('\r\n').replace(
+            "\n", "").replace("\r", "").replace("  ", " ")
+        conteudo = conteudo.strip().rstrip('\r\n').replace(
+            "\n", "").replace("\r", "").replace("  ", " ")
         return conteudo
 
     def _numero_valido(self, numero):

@@ -14,11 +14,13 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='vereadorlink',
             name='tipo',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, to='tipo_solicitacao.TipoSolicitacao'),
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.PROTECT, to='tipo_solicitacao.TipoSolicitacao'),
         ),
         migrations.AlterField(
             model_name='vereadorlink',
             name='vereador',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, to='vereador.Vereador'),
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.PROTECT, to='vereador.Vereador'),
         ),
     ]

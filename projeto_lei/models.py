@@ -43,7 +43,8 @@ class ProjetoLei(models.Model):
                         )
                         projeto_lei.save()
                     except IntegrityError:
-                        projeto_lei = ProjetoLei.objects.get(projeto=dado['projeto'])
+                        projeto_lei = ProjetoLei.objects.get(
+                            projeto=dado['projeto'])
                         projeto_lei.observacao = dado['situacao']
                         projeto_lei.save()
                         error = "Projeto ja existente - %s" % dado['projeto']
@@ -120,7 +121,6 @@ class ProjetoLei(models.Model):
             })
         return dados
 
-
     def buscar_html(link):
         html = urlopen(link)
         res = BeautifulSoup(html.read(), "html5lib")
@@ -173,14 +173,18 @@ class ProjetoLei(models.Model):
 
     def extrair_informacao():
         projetos = ProjetoLei.objects.all().order_by('-projeto').exclude(
-            Q(data_aprovacao__isnull=False) | Q(data_arquivamento__isnull=False)
+            Q(data_aprovacao__isnull=False) | Q(
+                data_arquivamento__isnull=False)
         ).values()
 
         for projeto in projetos:
             observacao = projeto['observacao']
-            aprovado = ProjetoLei.ajusta_data(ProjetoLei.indentifica_aprovacao(observacao))
-            divulgado = ProjetoLei.ajusta_data(ProjetoLei.indentifica_divulgacao(observacao))
-            arquivado = ProjetoLei.ajusta_data(ProjetoLei.indentifica_arquivamento(observacao))
+            aprovado = ProjetoLei.ajusta_data(
+                ProjetoLei.indentifica_aprovacao(observacao))
+            divulgado = ProjetoLei.ajusta_data(
+                ProjetoLei.indentifica_divulgacao(observacao))
+            arquivado = ProjetoLei.ajusta_data(
+                ProjetoLei.indentifica_arquivamento(observacao))
 
             projeto_lei = ProjetoLei.objects.get(projeto=projeto['projeto'])
             projeto_lei.data_divulgacao = divulgado

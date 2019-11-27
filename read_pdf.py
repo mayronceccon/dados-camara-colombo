@@ -31,12 +31,15 @@ def indicacao_assunto(indicacao):
     if matches is not None:
         return matches.group(2)
 
+
 arquivo = 'http://www.camaracolombo.pr.gov.br/pauta/2018/sessao_27_11_2018.pdf'
 
 raw = parser.from_file(arquivo)
 content = raw['content']
-content = content.strip().rstrip('\r\n').replace("\n", "").replace("\r", "").replace("  ", " ")
-content = content.strip().rstrip('\r\n').replace("\n", "").replace("\r", "").replace("  ", " ")
+content = content.strip().rstrip('\r\n').replace(
+    "\n", "").replace("\r", "").replace("  ", " ")
+content = content.strip().rstrip('\r\n').replace(
+    "\n", "").replace("\r", "").replace("  ", " ")
 
 # f = open('content.txt', 'w')
 # f.write(content)

@@ -8,4 +8,5 @@ class PautaAdmin(admin.ModelAdmin):
     list_display = ['descricao', 'data_sessao', 'indicacao_exportada']
     date_hierarchy = 'data_sessao'
 
+
 admin.site.register(Pauta, PautaAdmin)

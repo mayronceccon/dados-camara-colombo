@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='pauta',
             name='indicacao_exportada',
-            field=models.BooleanField(default=False, verbose_name='Indicacoes Exportadas'),
+            field=models.BooleanField(
+                default=False, verbose_name='Indicacoes Exportadas'),
         ),
     ]

@@ -16,7 +16,8 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='ProjetoLei',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('id', models.AutoField(auto_created=True,
+                                        primary_key=True, serialize=False, verbose_name='ID')),
                 ('projeto', models.IntegerField()),
                 ('protocolo', models.IntegerField()),
                 ('assunto', models.TextField()),
@@ -24,7 +25,8 @@ class Migration(migrations.Migration):
                 ('data_divulgacao', models.DateField(blank=True, null=True)),
                 ('data_aprovacao', models.DateField(blank=True, null=True)),
                 ('data_arquivamento', models.DateField(blank=True, null=True)),
-                ('vereador', models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, to='vereador.Vereador')),
+                ('vereador', models.OneToOneField(
+                    on_delete=django.db.models.deletion.PROTECT, to='vereador.Vereador')),
             ],
         ),
     ]

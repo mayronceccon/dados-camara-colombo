@@ -7,12 +7,15 @@ exercicio = 2019
 data_inicio = '20190301'
 data_final = '20190331'
 
-arquivoZip = './folha_pagamento_arquivos/%s_%s_%s.zip' % (exercicio, data_inicio, data_final)
+arquivoZip = './folha_pagamento_arquivos/%s_%s_%s.zip' % (
+    exercicio, data_inicio, data_final)
 
-url = 'http://intranet.camaracolombo.pr.gov.br/pronimtb/geraxml.asp?item=8&banco=DW_LC131_AP_0&exercicio=%s&dataInicial=%s&dataFinal=%s&unidadeGestora=-1&nmFornecedor=&TipoDespesa=0&TipoEsportacaoDados=2' % (exercicio, data_inicio, data_final)
+url = 'http://intranet.camaracolombo.pr.gov.br/pronimtb/geraxml.asp?item=8&banco=DW_LC131_AP_0&exercicio=%s&dataInicial=%s&dataFinal=%s&unidadeGestora=-1&nmFornecedor=&TipoDespesa=0&TipoEsportacaoDados=2' % (
+    exercicio, data_inicio, data_final)
 requests.get(url)
 
-r2 = requests.get('http://intranet.camaracolombo.pr.gov.br/pronimtb/dll/FolhaPagamento.zip')
+r2 = requests.get(
+    'http://intranet.camaracolombo.pr.gov.br/pronimtb/dll/FolhaPagamento.zip')
 
 open(arquivoZip, 'wb').write(r2.content)
 

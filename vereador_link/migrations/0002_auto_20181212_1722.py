@@ -21,7 +21,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='vereadorlink',
             name='tipo',
-            field=models.OneToOneField(default=1, on_delete=django.db.models.deletion.CASCADE, to='tipo_solicitacao.TipoSolicitacao'),
+            field=models.OneToOneField(
+                default=1, on_delete=django.db.models.deletion.CASCADE, to='tipo_solicitacao.TipoSolicitacao'),
             preserve_default=False,
         ),
         migrations.RemoveField(
@@ -31,7 +32,8 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='vereadorlink',
             name='vereador',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to='vereador.Vereador'),
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE, to='vereador.Vereador'),
             preserve_default=False,
         ),
     ]

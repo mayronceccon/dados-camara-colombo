@@ -7,4 +7,5 @@ class ExecutorAdmin(admin.ModelAdmin):
     fields = ('nome',)
     list_display = ['nome']
 
+
 admin.site.register(Executor, ExecutorAdmin)

@@ -26,7 +26,7 @@ class IndicacaoViewSet(viewsets.ModelViewSet):
         vereador = self.request.query_params.get('vereador', None)
         if vereador is not None:
             find = (
-                Q(vereador__nome__icontains=vereador) | 
+                Q(vereador__nome__icontains=vereador) |
                 Q(vereador__apelido__icontains=vereador)
             )
             if vereador.isnumeric():

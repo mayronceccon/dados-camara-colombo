@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='projetolei',
             name='vereador',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='vereador.Vereador'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT, to='vereador.Vereador'),
         ),
     ]
