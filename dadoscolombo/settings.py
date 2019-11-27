@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'rest_framework',
     'corsheaders',
     'multiselectfield',
     'pauta',
@@ -41,7 +42,7 @@ INSTALLED_APPS = [
     'projeto_lei',
     'executor',
     'indicacao',
-    'rest_framework',
+    'bairro',
 ]
 
 SITE_ID = 1
