@@ -1,0 +1,24 @@
+version: '3.0'
+services:
+  mariadb:
+    container_name: mariadb-dados-colombo
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+      MYSQL_ROOT_HOST: '%'
+    volumes:
+      - db:/var/lib/mysql
+    ports:
+      - '3306:3306'
+  phpmyadmin:
+    container_name: phpmyadmin-dados-colombo
+    image: phpmyadmin/phpmyadmin
+    links:
+      - mariadb
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+    ports:
+      - '8080:80'
+volumes:
+  db:
