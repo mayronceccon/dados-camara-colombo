@@ -43,15 +43,18 @@ def index(request):
 
 
 def salvar(request):
-    ProjetoLei.buscar_dados()
+    projeto = ProjetoLei()
+    projeto.buscar_dados()
     return JsonResponse([], safe=False)
 
 
 def salvar_em_tramite(request):
-    ProjetoLei.buscar_dados_em_tramite()
+    projeto = ProjetoLei()
+    projeto.buscar_dados_em_tramite()
     return JsonResponse([], safe=False)
 
 
 def extrair_info(request):
-    ProjetoLei.extrair_informacao()
+    projeto = ProjetoLei()
+    projeto.extrair_informacao()
     return JsonResponse([], safe=False)

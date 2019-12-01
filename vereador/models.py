@@ -65,6 +65,10 @@ class Vereador(models.Model):
     def __str__(self):
         return "%s (%s)" % (self.nome, self.apelido)
 
+    class Meta:
+        verbose_name = "vereador"
+        verbose_name_plural = "vereadores"
+
     def get_absolute_image_url(self):
         try:
             return "{0}{1}".format(Site.objects.get_current(), self.foto.url)

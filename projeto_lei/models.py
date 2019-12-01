@@ -25,13 +25,17 @@ class ProjetoLei(models.Model):
     def __str__(self):
         return self.assunto
 
-    def buscar_dados():
+    class Meta:
+        verbose_name = "projeto de lei"
+        verbose_name_plural = "projetos de lei"
+
+    def buscar_dados(self):
         vereadores = Vereador.objects.all()
         for vereador in vereadores:
             link_projeto = vereador.links.all().filter(tipo=1).values()
             if link_projeto:
                 link = link_projeto[0]['link']
-                dados = ProjetoLei.buscar_html(link)
+                dados = self.buscar_html(link)
                 for dado in dados:
                     try:
                         projeto_lei = ProjetoLei(
@@ -50,9 +54,9 @@ class ProjetoLei(models.Model):
                         error = "Projeto ja existente - %s" % dado['projeto']
                         print(error)
 
-    def buscar_dados_em_tramite():
+    def buscar_dados_em_tramite(self):
         link = 'http://www.camaracolombo.pr.gov.br/projetos_legislativo1.asp'
-        dados = ProjetoLei.buscar_html_em_tramite(link)
+        dados = self.buscar_html_em_tramite(link)
         for dado in dados:
 
             if (dado['vereador'] == 'Anderson da Silva'):
@@ -84,7 +88,7 @@ class ProjetoLei(models.Model):
                 error = "Projeto ja existente - %s" % dado['projeto']
                 print(error)
 
-    def buscar_html_em_tramite(link):
+    def buscar_html_em_tramite(self, link):
         html = urlopen(link)
         res = BeautifulSoup(html.read(), "html5lib")
 
@@ -121,7 +125,7 @@ class ProjetoLei(models.Model):
             })
         return dados
 
-    def buscar_html(link):
+    def buscar_html(self, link):
         html = urlopen(link)
         res = BeautifulSoup(html.read(), "html5lib")
 
@@ -154,11 +158,11 @@ class ProjetoLei(models.Model):
             })
         return dados
 
-    def remove_tupla(tuples):
+    def remove_tupla(self, tuples):
         tuples = [t for t in tuples if t]
         return tuples
 
-    def ajusta_data(data):
+    def ajusta_data(self, data):
         if data is not None:
             data = str(data).replace('/', '-')
             padrao_data = '%d-%m-%Y'
@@ -171,7 +175,7 @@ class ProjetoLei(models.Model):
             return data
         return None
 
-    def extrair_informacao():
+    def extrair_informacao(self):
         projetos = ProjetoLei.objects.all().order_by('-projeto').exclude(
             Q(data_aprovacao__isnull=False) | Q(
                 data_arquivamento__isnull=False)
@@ -179,12 +183,12 @@ class ProjetoLei(models.Model):
 
         for projeto in projetos:
             observacao = projeto['observacao']
-            aprovado = ProjetoLei.ajusta_data(
-                ProjetoLei.indentifica_aprovacao(observacao))
-            divulgado = ProjetoLei.ajusta_data(
-                ProjetoLei.indentifica_divulgacao(observacao))
-            arquivado = ProjetoLei.ajusta_data(
-                ProjetoLei.indentifica_arquivamento(observacao))
+            aprovado = self.ajusta_data(
+                self.indentifica_aprovacao(observacao))
+            divulgado = self.ajusta_data(
+                self.indentifica_divulgacao(observacao))
+            arquivado = self.ajusta_data(
+                self.indentifica_arquivamento(observacao))
 
             projeto_lei = ProjetoLei.objects.get(projeto=projeto['projeto'])
             projeto_lei.data_divulgacao = divulgado
@@ -192,7 +196,7 @@ class ProjetoLei(models.Model):
             projeto_lei.data_arquivamento = arquivado
             projeto_lei.save()
 
-    def indentifica_aprovacao(observacao):
+    def indentifica_aprovacao(self, observacao):
         observacao = observacao.replace('  ', ' ')
         regex1 = "(?:Aprovado<br\/>)([0-9]{2}\/[0-9]{2}\/[0-9]{2,4})"
         regex2 = "([0-9]{2}\/[0-9]{2}\/[0-9]{2,4}) - Aprovado"
@@ -202,9 +206,9 @@ class ProjetoLei(models.Model):
 
         matches = re.findall(regex, observacao, re.IGNORECASE)
         for match in matches:
-            return ProjetoLei.remove_tupla(match)[0]
+            return self.remove_tupla(match)[0]
 
-    def indentifica_divulgacao(observacao):
+    def indentifica_divulgacao(self, observacao):
         observacao = observacao.replace('  ', ' ')
         regex1 = "([0-9]{2}\/[0-9]{2}\/[0-9]{2,4}) - Divulgado"
         regex2 = "Divulgado - ([0-9]{2}\/[0-9]{2}\/[0-9]{2,4})"
@@ -212,9 +216,9 @@ class ProjetoLei(models.Model):
 
         matches = re.findall(regex, observacao, re.IGNORECASE)
         for match in matches:
-            return ProjetoLei.remove_tupla(match)[0]
+            return self.remove_tupla(match)[0]
 
-    def indentifica_arquivamento(observacao):
+    def indentifica_arquivamento(self, observacao):
         observacao = observacao.replace('  ', ' ')
         regex1 = "(?:Arquivado<br\/>)([0-9]{2}\/[0-9]{2}\/[0-9]{2,4})"
         regex2 = "([0-9]{2}\/[0-9]{2}\/[0-9]{4})<br\/>Arquivado"
@@ -224,4 +228,4 @@ class ProjetoLei(models.Model):
 
         matches = re.findall(regex, observacao, re.IGNORECASE)
         for match in matches:
-            return ProjetoLei.remove_tupla(match)[0]
+            return self.remove_tupla(match)[0]

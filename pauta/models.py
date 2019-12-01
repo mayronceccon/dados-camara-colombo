@@ -10,7 +10,7 @@ from lib.notificacao import send
 
 class Pauta(models.Model):
     descricao = models.CharField(max_length=100)
-    link = models.URLField(unique=True)
+    link = models.URLField(max_length=255, unique=True)
     data_sessao = models.DateField()
     cadastro = models.DateTimeField(auto_now_add=True)
     indicacao_exportada = models.BooleanField(
@@ -26,8 +26,12 @@ class Pauta(models.Model):
         cache.delete(cache_key)
         super(Pauta, self).save(*args, **kwargs)
 
-    def salvar_busca():
-        dados = Pauta.busca_arquivos_sessao()
+    class Meta:
+        verbose_name = "pauta"
+        verbose_name_plural = "pautas"
+
+    def salvar_busca(self):
+        dados = self.busca_arquivos_sessao()
         notificar = False
         for dado in dados:
             try:
@@ -49,7 +53,7 @@ class Pauta(models.Model):
                 'https://camaracolombo.com.br/pautas'
             )
 
-    def __urls():
+    def __urls(self):
         url_camara = 'http://www.camaracolombo.pr.gov.br'
         url_pauta = "%s/pauta.html" % (url_camara)
         return {
@@ -57,15 +61,15 @@ class Pauta(models.Model):
             'pauta': url_pauta
         }
 
-    def busca_arquivos_sessao():
-        url_camara = Pauta.__urls()['camara']
-        sessoes = Pauta.__dados_html()
+    def busca_arquivos_sessao(self):
+        url_camara = self.__urls()['camara']
+        sessoes = self.__dados_html()
         dados = []
         for sessao in sessoes:
             compl = None
             titulo = None
             href = sessao['href']
-            arquivo_sessao = Pauta.__arquivo_sessao(sessao)
+            arquivo_sessao = self.__arquivo_sessao(sessao)
 
             # busca nomes arquivos
             regex = r"(/sessao_)(.*)(.pdf)"
@@ -94,9 +98,9 @@ class Pauta(models.Model):
             })
         return dados
 
-    def __dados_html():
-        url_camara = Pauta.__urls()['camara']
-        url_pauta = Pauta.__urls()['pauta']
+    def __dados_html(self):
+        url_camara = self.__urls()['camara']
+        url_pauta = self.__urls()['pauta']
 
         html = urlopen(url_pauta)
         res = BeautifulSoup(html.read(), "html5lib")
@@ -109,8 +113,8 @@ class Pauta(models.Model):
         )
         return sessoes
 
-    def __arquivo_sessao(sessao):
-        url_camara = Pauta.__urls()['camara']
+    def __arquivo_sessao(self, sessao):
+        url_camara = self.__urls()['camara']
         href = sessao['href']
         arquivo_sessao = "%s/%s" % (url_camara, href)
         return arquivo_sessao

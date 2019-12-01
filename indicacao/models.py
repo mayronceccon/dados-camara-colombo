@@ -34,3 +34,5 @@ class Indicacao(models.Model):
 
     class Meta:
         unique_together = ('numero', 'pauta')
+        verbose_name = "indicação"
+        verbose_name_plural = "indicações"

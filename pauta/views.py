@@ -37,10 +37,12 @@ def index(request):
 
 
 def recuperar(request):
-    dados = Pauta.busca_arquivos_sessao()
+    pauta = Pauta()
+    dados = pauta.busca_arquivos_sessao()
     return JsonResponse(dados, safe=False)
 
 
 def salvar(request):
-    Pauta.salvar_busca()
+    pauta = Pauta()
+    pauta.salvar_busca()
     return JsonResponse([], safe=False)

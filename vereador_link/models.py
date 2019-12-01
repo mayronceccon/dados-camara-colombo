@@ -32,3 +32,7 @@ class VereadorLink(models.Model):
 
     def __str__(self):
         return self.link
+    
+    class Meta:
+        verbose_name = "link de vereador"
+        verbose_name_plural = "links de vereadores"

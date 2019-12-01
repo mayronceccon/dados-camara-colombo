@@ -15,3 +15,7 @@ class Executor(models.Model):
         nome = sanitize(nome)
         self.nome = nome
         super(Executor, self).save(*args, **kwargs)
+
+    class Meta:
+        verbose_name = "executor"
+        verbose_name_plural = "executores"
