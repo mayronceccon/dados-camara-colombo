@@ -5,7 +5,9 @@ from django.conf.urls.static import static
 from django.conf.urls import url
 
 from rest_framework import routers
+from rest_framework import permissions
 
+from bairro.views import BairroViewSet
 from indicacao.views import IndicacaoViewSet
 from pauta.views import PautaViewSet
 from vereador.views import VereadorViewSet
@@ -13,6 +15,7 @@ from projeto_lei.views import ProjetoLeiViewSet
 from executor.views import ExecutorViewSet
 
 router = routers.DefaultRouter()
+router.register(r'bairros', BairroViewSet, basename='Bairro')
 router.register(r'indicacoes', IndicacaoViewSet)
 router.register(r'pautas', PautaViewSet)
 router.register(r'vereadores', VereadorViewSet)
