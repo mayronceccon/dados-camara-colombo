@@ -22,9 +22,9 @@ schema_view = get_schema_view(
         title="API",
         default_version='v1',
         description="API Cidadão na Câmara",
-        terms_of_service="https://www.google.com/policies/terms/",
+        # terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email="unofficialcamaracolombo@gmail.com"),
-        license=openapi.License(name="BSD License"),
+        # license=openapi.License(name="BSD License"),
         url="https://api.cidadaonacamara.com.br",
         schemes="https"
     ),
