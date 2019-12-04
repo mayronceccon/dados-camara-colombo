@@ -1,12 +1,18 @@
-from django.shortcuts import render
-
 from rest_framework import viewsets
+from rest_framework import mixins
 
 from .models import Executor
 from .serializers import ExecutorSerializer
 
 
-class ExecutorViewSet(viewsets.ModelViewSet):
+class ExecutorViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet
+):
+    """Destinatários que são responsáveis pela execução das solicitações"""
     queryset = Executor.objects.all().order_by('nome')
     serializer_class = ExecutorSerializer
-    http_method_names = ['get']
+
+    def get_queryset(self):
+        return self.queryset
