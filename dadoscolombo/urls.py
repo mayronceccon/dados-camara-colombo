@@ -46,7 +46,6 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('pautas/', include('pauta.urls')),
     path('projetos_lei/', include('projeto_lei.urls')),
-    path('indicacoes/', include('indicacao.urls')),
     url(r'^api-auth/', include('rest_framework.urls')),
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
