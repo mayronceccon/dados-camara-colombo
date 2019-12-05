@@ -1,12 +1,14 @@
+import json
 from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 from django.core import serializers
-from django.core.cache import cache
-from .models import Pauta
-import json
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework import viewsets
+from rest_framework.decorators import action
+from .models import Pauta
 from .serializers import PautaSerializer
+from .services import PautaServices
 
 
 class PautaViewSet(viewsets.ModelViewSet):
@@ -14,35 +16,18 @@ class PautaViewSet(viewsets.ModelViewSet):
     serializer_class = PautaSerializer
     http_method_names = ['get']
 
+    @action(detail=False, methods=['GET'])
+    def recuperar(self, request, *args, **kwargs):
+        service = PautaServices()
+        dados = service.busca_arquivos_sessao()
+        return JsonResponse(dados, safe=False)
 
-def index(request):
-    cache_key = 'pauta_list'
-    # 23 horas
-    cache_time = (60 * 60 * 23)
-    data = cache.get(cache_key)
+    @action(detail=False, methods=['GET'])
+    def salvar(self, request, *args, **kwargs):
+        service = PautaServices()
+        service.salvar_busca()
+        return JsonResponse([], safe=False)
 
-    if not data:
-        jsonresponse = []
-        for pauta in Pauta.objects.all().order_by('-data_sessao'):
-            jsonresponse.append({
-                "id": pauta.id,
-                "descricao": pauta.descricao,
-                "link": pauta.link,
-                "data_sessao": pauta.data_sessao
-            })
-        data = jsonresponse
-        cache.set(cache_key, data, cache_time)
-
-    return JsonResponse({"results": data})
-
-
-def recuperar(request):
-    pauta = Pauta()
-    dados = pauta.busca_arquivos_sessao()
-    return JsonResponse(dados, safe=False)
-
-
-def salvar(request):
-    pauta = Pauta()
-    pauta.salvar_busca()
-    return JsonResponse([], safe=False)
+    @method_decorator(cache_page(60*60*23))
+    def list(self, request):
+        return super().list(request)
