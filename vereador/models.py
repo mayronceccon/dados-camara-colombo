@@ -74,8 +74,3 @@ class Vereador(models.Model):
             return "{0}{1}".format(Site.objects.get_current(), self.foto.url)
         except Exception:
             return None
-
-    def save(self, *args, **kwargs):
-        cache_key = 'vereador_list'
-        cache.delete(cache_key)
-        super(Vereador, self).save(*args, **kwargs)
