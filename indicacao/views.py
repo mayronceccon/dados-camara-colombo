@@ -1,15 +1,13 @@
 import datetime
 import json
-
 from django.core import serializers
-from django.core.cache import cache
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from rest_framework.decorators import action
 from rest_framework import viewsets
-
 from .models import Indicacao
 from .serializers import IndicacaoSerializer
 from .services import IndicacaoServices
@@ -22,6 +20,14 @@ class IndicacaoViewSet(viewsets.ModelViewSet):
     )
     serializer_class = IndicacaoSerializer
     http_method_names = ['get']
+
+    @method_decorator(cache_page(60*60*23))
+    def retrieve(self, request, pk=None):
+        return super().retrieve(request, pk)
+
+    @method_decorator(cache_page(60*60*23))
+    def list(self, request):
+        return super().list(request)
 
     @action(detail=False, methods=['GET'], name='Buscar Indicações')
     def buscar_indicacoes(self, request, *args, **kwargs):
