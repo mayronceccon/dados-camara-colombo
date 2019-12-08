@@ -12,10 +12,10 @@ class VereadorViewSet(viewsets.ModelViewSet):
     serializer_class = VereadorSerializer
     http_method_names = ['get']
 
-    @method_decorator(cache_page(60*60*23))
+    @method_decorator(cache_page(60*60*24*30))
     def retrieve(self, request, pk=None):
         return super().retrieve(request, pk)
 
-    @method_decorator(cache_page(60*60*23))
+    @method_decorator(cache_page(60*60*23*30))
     def list(self, request):
         return super().list(request)
