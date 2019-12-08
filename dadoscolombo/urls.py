@@ -49,8 +49,7 @@ urlpatterns = [
         schema_view.with_ui('swagger', cache_timeout=0),
         name='schema-swagger-ui'
     ),
-    path('api/', include(router.urls)),
-    path('projetos_lei/', include('projeto_lei.urls')),
+    path('api/v1/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls')),
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

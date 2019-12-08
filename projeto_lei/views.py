@@ -1,9 +1,10 @@
 from django.core.cache import cache
 from django.http import JsonResponse
 from django.shortcuts import render
-
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from rest_framework.decorators import action
 from rest_framework import viewsets
-
 from .models import ProjetoLei
 from .serializers import ProjetoLeiSerializer
 
@@ -13,48 +14,24 @@ class ProjetoLeiViewSet(viewsets.ModelViewSet):
     serializer_class = ProjetoLeiSerializer
     http_method_names = ['get']
 
+    @method_decorator(cache_page(60*60*23))
+    def list(self, request):
+        return super().list(request)
 
-def index(request):
-    cache_key = 'projetos_list'
-    # 23 horas
-    cache_time = (60 * 60 * 23)
-    data = cache.get(cache_key)
+    @action(detail=False, methods=['GET'])
+    def salvar(self, request):
+        projeto = ProjetoLei()
+        projeto.buscar_dados()
+        return JsonResponse([], safe=False)
 
-    if not data:
-        jsonresponse = []
-        projetos = ProjetoLei.objects.all().order_by('-projeto')
-        for projeto in projetos:
-            jsonresponse.append({
-                "projeto": projeto.projeto,
-                "protocolo": projeto.protocolo,
-                "assunto": projeto.assunto,
-                "vereador": {
-                    "nome": projeto.vereador.nome,
-                    "apelino": projeto.vereador.apelido
-                },
-                "data_divulgacao": projeto.data_divulgacao,
-                "data_aprovacao": projeto.data_aprovacao,
-                "data_arquivamento": projeto.data_arquivamento
-            })
-        data = jsonresponse
-        cache.set(cache_key, data, cache_time)
+    @action(detail=False, methods=['GET'])
+    def salvar_em_tramite(self, request):
+        projeto = ProjetoLei()
+        projeto.buscar_dados_em_tramite()
+        return JsonResponse([], safe=False)
 
-    return JsonResponse({"results": data})
-
-
-def salvar(request):
-    projeto = ProjetoLei()
-    projeto.buscar_dados()
-    return JsonResponse([], safe=False)
-
-
-def salvar_em_tramite(request):
-    projeto = ProjetoLei()
-    projeto.buscar_dados_em_tramite()
-    return JsonResponse([], safe=False)
-
-
-def extrair_info(request):
-    projeto = ProjetoLei()
-    projeto.extrair_informacao()
-    return JsonResponse([], safe=False)
+    @action(detail=False, methods=['GET'])
+    def extrair_info(self, request):
+        projeto = ProjetoLei()
+        projeto.extrair_informacao()
+        return JsonResponse([], safe=False)
