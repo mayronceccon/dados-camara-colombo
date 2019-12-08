@@ -8,7 +8,7 @@ install:
   - pip install -r requirements.txt
 before_script:
   - python manage.py migrate --no-input
-  - python manage.py runserver
+  #- python manage.py runserver
 script:
   - python --version
   - python manage.py test
