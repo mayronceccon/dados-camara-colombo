@@ -154,7 +154,8 @@ REST_FRAMEWORK = {
     'PAGE_SIZE': 25,
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
-    )
+    ),
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
 
 APPEND_SLASH = False

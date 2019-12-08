@@ -6,11 +6,12 @@ branches:
     - master
 install:
   - pip install -r requirements.txt
-# before_script:
-#   - python manage.py migrate --no-input
+before_script:
+  - python manage.py migrate --no-input
+  - python manage.py runserver
 script:
   - python --version
-  #- python manage.py test
+  - python manage.py test
 notifications:
   email:
     recipients:
