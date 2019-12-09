@@ -1,6 +1,9 @@
 language: python
 python: 
   - "3.7"
+cache:
+  directories:
+  - tmp
 services:
   - mysql
 branches:
@@ -11,8 +14,6 @@ install:
 before_script:
   - cp .env.example .env
   - mysql -e 'create database test' -u root
-  # - python manage.py migrate --no-input
-  #- python manage.py runserver
 script:
   - python --version
   - python manage.py test --no-input
