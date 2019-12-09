@@ -15,7 +15,7 @@ before_script:
   #- python manage.py runserver
 script:
   - python --version
-  - yes | python manage.py test
+  - python manage.py test --no-input
 notifications:
   email:
     recipients:
