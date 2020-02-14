@@ -1,0 +1,29 @@
+[run]
+omit = 
+    */.venv/*
+    */venv/*
+    */__init__.py
+    */migrations/*
+    */tests.py
+    */test_*
+
+[report]
+omit = 
+    */.venv/*
+    */venv/*
+    */__init__.py
+    */migrations/*
+    */tests.py
+    */test_*
+
+exclude_lines =
+    pragma: no cover
+
+    def __repr__
+    if self\.debug
+
+    raise AssertionError
+    raise NotImplementedError
+
+    if 0:
+    if __name__ == .__main__.:

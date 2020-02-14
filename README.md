@@ -9,3 +9,16 @@ Import
 ```
 python manage.py loaddata db.json
 ```
+
+# Coverage
+```
+coverage run manage.py test
+```
+
+```
+coverage report
+```
+
+```
+coverage html
+```

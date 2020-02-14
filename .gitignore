@@ -11,3 +11,5 @@ media/
 /.idea/
 /folha_pagamento_arquivos/
 db.json
+.coverage
+/htmlcov/
