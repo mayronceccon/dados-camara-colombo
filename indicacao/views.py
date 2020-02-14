@@ -23,49 +23,26 @@ class IndicacaoViewSet(viewsets.ModelViewSet):
 
     # @method_decorator(cache_page(60*60*23))
     def retrieve(self, request, pk=None):
+        """
+        Retorna uma indicação específica
+        """
         return super().retrieve(request, pk)
 
     # @method_decorator(cache_page(60*60*23))
     def list(self, request):
+        """
+        Retorna a lista de indicações
+        """
         return super().list(request)
 
     @action(detail=False, methods=['GET'], name='Buscar Indicações')
     def buscar_indicacoes(self, request, *args, **kwargs):
-        """Obter os PDF's do site da Câmara Municipal e salvar as indicações"""
+        """
+        Obtem as indicações das pautas da Câmara Municipal
+        """
         services = IndicacaoServices()
         services.buscar_indicacoes()
         return JsonResponse(
             datetime.datetime.now(),
             safe=False
         )
-
-    # def get_queryset(self):
-    #     vereador = self.request.query_params.get('vereador', None)
-    #     if vereador is not None:
-    #         find = (
-    #             Q(vereador__nome__icontains=vereador) |
-    #             Q(vereador__apelido__icontains=vereador)
-    #         )
-    #         if vereador.isnumeric():
-    #             find = Q(vereador=vereador)
-    #         self.queryset = self.queryset.filter(find)
-
-    #     pauta = self.request.query_params.get('pauta', None)
-    #     if pauta is not None:
-    #         find = Q(pauta__descricao__icontains=pauta)
-    #         if pauta.isnumeric():
-    #             find = Q(pauta=pauta)
-    #         self.queryset = self.queryset.filter(find)
-
-    #     destinatario = self.request.query_params.get('destinatario', None)
-    #     if destinatario is not None:
-    #         find = Q(destinatario__nome__icontains=destinatario)
-    #         if destinatario.isnumeric():
-    #             find = Q(destinatario=destinatario)
-    #         self.queryset = self.queryset.filter(find)
-
-    #     assunto = self.request.query_params.get('assunto', None)
-    #     if assunto is not None:
-    #         find = Q(assunto__icontains=assunto)
-    #         self.queryset = self.queryset.filter(find)
-    #     return self.queryset
