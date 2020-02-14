@@ -1,8 +1,13 @@
 from django.test import TestCase
-from lib.util.string import normalize
+from lib.util.string import sanitize, normalize
 
 
 class StringTest(TestCase):
+    def test_sanitize(self):
+        string = "Indicação número 2222 de João Pedro - 25/04/2011"
+        esperado = "Indicacao numero 2222 de Joao Pedro 25 04 2011"
+        self.assertEqual(esperado, sanitize(string))
+
     def test_normalize(self):
         string = """
            Indicação
