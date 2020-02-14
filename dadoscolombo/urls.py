@@ -32,7 +32,7 @@ schema_view = get_schema_view(
 
 router = routers.DefaultRouter()
 router.register(r'bairros', BairroViewSet, basename='Bairro')
-router.register(r'indicacoes', IndicacaoViewSet)
+router.register(r'indicacoes', IndicacaoViewSet, basename='Indicacao')
 router.register(r'pautas', PautaViewSet)
 router.register(r'vereadores', VereadorViewSet)
 router.register(r'projetos', ProjetoLeiViewSet)
