@@ -1,9 +1,5 @@
 import datetime
-import json
-from django.core import serializers
-from django.db.models import Q
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
+from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from rest_framework.decorators import action
