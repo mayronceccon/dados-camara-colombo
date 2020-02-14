@@ -99,3 +99,13 @@ class IndicacaoModelsTest(TestCase):
                 assunto="Assunto 100"
             )
             indicacao.save()
+
+    def test_campo_numero_obrigatorio(self):
+        with self.assertRaises(IntegrityError):
+            indicacao = Indicacao(
+                pauta=self.__pauta,
+                vereador=self.__vereador,
+                destinatario=self.__executor,
+                assunto="Assunto 100"
+            )
+            indicacao.save()
