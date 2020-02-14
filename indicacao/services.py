@@ -3,59 +3,62 @@ import re
 from django.db import IntegrityError
 from django.db.models import Q
 from tika import parser
+from lib.util.string import normalize
 
-from lib.util.string import sanitize
 from pauta.models import Pauta
 from vereador.models import Vereador
 from executor.models import Executor
-
 from .models import Indicacao
+from .busca_dados.lista import Lista
+from .busca_dados.numero import Numero
+from .busca_dados.autor import Autor
+from .busca_dados.destinatario import Destinatario
+from .busca_dados.assunto import Assunto
 
 
 class IndicacaoServices:
-    _pauta = None
-
     def __init__(self, *args, **kwargs):
+        self.__pauta = None
         return super().__init__(*args, **kwargs)
 
     def buscar_indicacoes(self):
         pautas = Pauta.objects.all().filter(indicacao_exportada=False)
         for pauta in pautas:
             try:
-                self._pauta = pauta
-                self.buscar_dados()
-                self._set_indicacoes_exportadas()
+                self.__pauta = pauta
+                self.__buscar_dados()
+                self.__set_indicacoes_exportadas()
             except IntegrityError:
                 print('Algum erro')
 
-    def _set_indicacoes_exportadas(self):
-        self._pauta.indicacao_exportada = True
-        self._pauta.save()
+    def __set_indicacoes_exportadas(self):
+        self.__pauta.indicacao_exportada = True
+        self.__pauta.save()
 
-    def buscar_dados(self):
-        pauta = self._pauta
-        content = self._recuperar_conteudo(pauta.link)
-        matches = self._recuperar_dados_lista(content)
+    def __buscar_dados(self):
+        pauta = self.__pauta
+        content = self.__recuperar_conteudo(pauta.link)
+        matches = self.__recuperar_dados_lista(content)
 
         if matches is None:
             return
 
         for match in matches:
-            numero = self._indicacao_numero(match)
-            if not self._numero_valido(numero):
+            numero = self.__indicacao_numero(match)
+            if not self.__numero_valido(numero):
                 continue
 
-            if self._numero_ja_cadastrado(numero, pauta):
+            if self.__numero_ja_cadastrado(numero, pauta):
                 continue
 
-            assunto = self._indicacao_assunto(match)
-            autor = self._indicacao_autor(match)
-            vereador = self._buscar_vereador(autor)
-            destinatario = self._criar_buscar_executor(
-                self._indicacao_destinatario(match)
+            assunto = self.__indicacao_assunto(match)
+            autor = self.__indicacao_autor(match)
+            vereador = self.__buscar_vereador(autor)
+            destinatario = self.__criar_buscar_executor(
+                self.__indicacao_destinatario(match)
             )
 
-            self._salvar_indicacao(
+            self.__salvar_indicacao(
                 pauta=pauta,
                 vereador=vereador,
                 destinatario=destinatario,
@@ -63,24 +66,16 @@ class IndicacaoServices:
                 assunto=assunto
             )
 
-    def _recuperar_conteudo(self, link):
+    def __recuperar_conteudo(self, link):
         raw = parser.from_file(link)
-        conteudo = self._limpar_conteudo(raw['content'])
-        return conteudo
+        return normalize(raw['content'])
 
-    def _limpar_conteudo(self, conteudo):
-        conteudo = conteudo.strip().rstrip('\r\n').replace(
-            "\n", "").replace("\r", "").replace("  ", " ")
-        conteudo = conteudo.strip().rstrip('\r\n').replace(
-            "\n", "").replace("\r", "").replace("  ", " ")
-        return conteudo
-
-    def _numero_valido(self, numero):
+    def __numero_valido(self, numero):
         if numero is None:
             return False
         return True
 
-    def _numero_ja_cadastrado(self, numero, pauta):
+    def __numero_ja_cadastrado(self, numero, pauta):
         numero_cadastrado = Indicacao.objects.filter(
             Q(numero=numero) & Q(pauta=pauta)
         )
@@ -89,16 +84,16 @@ class IndicacaoServices:
             return True
         return False
 
-    def _buscar_vereador(self, nome):
+    def __buscar_vereador(self, nome):
         return Vereador.objects.buscar_nome(nome)
 
-    def _criar_buscar_executor(self, nome):
+    def __criar_buscar_executor(self, nome):
         obj, created = Executor.objects.get_or_create(
             nome=nome
         )
         return obj
 
-    def _salvar_indicacao(self, **dados):
+    def __salvar_indicacao(self, **dados):
         indicacao = Indicacao(
             pauta=dados['pauta'],
             vereador=dados['vereador'],
@@ -108,33 +103,17 @@ class IndicacaoServices:
         )
         indicacao.save()
 
-    def _recuperar_dados_lista(self, content):
-        regex = r"(?:cação\s)(.*?)(?:\sIndi|\sColombo, [0-9]{1,2} de|\sTribuna Livre)"
-        return re.findall(regex, content)
+    def __recuperar_dados_lista(self, content):
+        return Lista().recuperar(content)
 
-    def _indicacao_numero(self, indicacao):
-        regex = r"((?:N°[:]?[\s]?)([0-9]{1,})((?:\s{0,}Autor|Autora)))"
-        matches = re.search(regex, indicacao.lstrip())
-        if matches is not None:
-            return int(matches.group(2))
+    def __indicacao_numero(self, indicacao):
+        return Numero().recuperar(indicacao)
 
-    def _indicacao_autor(self, indicacao):
-        regex = r"((?:Autor[a]{0,}[:]?\s{0,})(.*?)(?:\s{0,}Destinatário))"
-        matches = re.search(regex, indicacao)
-        if matches is not None:
-            autor = matches.group(2).split("(")[0].strip().lstrip()
-            return self._limpar_conteudo(autor)
+    def __indicacao_autor(self, indicacao):
+        return Autor().recuperar(indicacao)
 
-    def _indicacao_destinatario(self, indicacao):
-        regex = r"((?:Destinatário[:]?\s)(.*?)(?:\sAssunto:))"
-        matches = re.search(regex, indicacao)
-        if matches is not None:
-            destinatario = sanitize(matches.group(2)).upper()
-            return self._limpar_conteudo(destinatario)
+    def __indicacao_destinatario(self, indicacao):
+        return Destinatario().recuperar(indicacao)
 
-    def _indicacao_assunto(self, indicacao):
-        regex = r"((?:Assunto[:]?\s)(.*))"
-        matches = re.search(regex, indicacao)
-        if matches is not None:
-            assunto = matches.group(2).lstrip()
-            return self._limpar_conteudo(assunto)
+    def __indicacao_assunto(self, indicacao):
+        return Assunto().recuperar(indicacao)
