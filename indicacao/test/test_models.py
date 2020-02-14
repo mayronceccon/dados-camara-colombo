@@ -4,6 +4,7 @@ from indicacao.models import Indicacao
 from pauta.models import Pauta
 from vereador.models import Vereador
 from executor.models import Executor
+from django.db.utils import IntegrityError
 
 
 class IndicacaoModelsTest(TestCase):
@@ -15,7 +16,7 @@ class IndicacaoModelsTest(TestCase):
 
         self.__pauta = Pauta.objects.create(
             descricao="Sessão - 23/04/2019",
-            link="http://www.camaracolombo.pr.gov.br/pauta/2019/sessao_23_04_2019.pdf",
+            link="http://www.camaracolombo.pr.gov.br",
             data_sessao="2019-04-23"
         )
 
@@ -78,3 +79,23 @@ class IndicacaoModelsTest(TestCase):
         )
 
         self.assertEqual(2, Indicacao.objects.count())
+
+    def test_chaves_unicas(self):
+        indicacao = Indicacao(
+            pauta=self.__pauta,
+            vereador=self.__vereador,
+            destinatario=self.__executor,
+            numero=100,
+            assunto="Assunto 100"
+        )
+        indicacao.save()
+
+        with self.assertRaises(IntegrityError):
+            indicacao = Indicacao(
+                pauta=self.__pauta,
+                vereador=self.__vereador,
+                destinatario=self.__executor,
+                numero=100,
+                assunto="Assunto 100"
+            )
+            indicacao.save()
