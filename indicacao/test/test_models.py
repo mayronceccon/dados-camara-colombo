@@ -109,3 +109,17 @@ class IndicacaoModelsTest(TestCase):
                 assunto="Assunto 100"
             )
             indicacao.save()
+
+    def test_str_model(self):
+        indicacao = Indicacao(
+            id=1,
+            pauta=self.__pauta,
+            vereador=self.__vereador,
+            destinatario=self.__executor,
+            numero=10,
+            assunto="XPTO"
+        )
+        indicacao.save()
+
+        indicacao = Indicacao.objects.get(pk=1)
+        self.assertEqual("10", str(indicacao))
