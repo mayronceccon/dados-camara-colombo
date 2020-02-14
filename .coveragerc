@@ -19,6 +19,8 @@ omit =
 exclude_lines =
     pragma: no cover
 
+    pass
+
     def __repr__
     if self\.debug
 
