@@ -8,7 +8,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 class TikaTest(TestCase):
-    def test1(self):
+    def test_retorno_esperado(self):
         arquivo_texto_esperado = "%s/parser/texto_parser.txt" % (BASE_DIR)
         with open(arquivo_texto_esperado, 'r') as f:
             texto_esperado = f.read()
