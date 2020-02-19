@@ -6,7 +6,7 @@ from rest_framework.decorators import action
 from rest_framework import viewsets
 from .models import Indicacao
 from .serializers import IndicacaoSerializer
-from .services import IndicacaoServices
+from .services1 import IndicacaoPautaServices
 
 
 class IndicacaoViewSet(viewsets.ModelViewSet):
@@ -36,8 +36,8 @@ class IndicacaoViewSet(viewsets.ModelViewSet):
         """
         Obtem as indicações das pautas da Câmara Municipal
         """
-        services = IndicacaoServices()
-        services.buscar_indicacoes()
+        services = IndicacaoPautaServices()
+        services.buscar()
         return JsonResponse(
             datetime.datetime.now(),
             safe=False
