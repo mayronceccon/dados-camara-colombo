@@ -2,7 +2,7 @@ from django.test import TestCase
 from indicacao.models import Indicacao
 from pauta.models import Pauta
 from vereador.models import Vereador
-from indicacao.services import IndicacaoServices
+# from indicacao.services import IndicacaoServices
 
 
 class IndicacaoServiceTest(TestCase):
