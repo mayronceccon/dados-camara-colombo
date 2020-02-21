@@ -2,23 +2,23 @@
 
 Este projeto tem como objetivo agrupar e mostrar de uma forma clara, o que os vereadores estão propondo na Câmara de Vereadores de seus municípios.
 
-- [Requisitos do Projeto](#requisitos)
-- [Instalação do Projeto](#instalacao)
-- [Configuração do Projeto](#configuracao)
-- [Execução do Projeto](#execucao)
-- [Testes](#testes)
-- [Contribuição](#contribuicao)
-- [Licença](#licenca)
+- [Requisitos](#Requisitos)
+- [Instalação](#Instalação)
+- [Configuração](#Configuração)
+- [Execução](#Execução)
+- [Testes](#Testes)
+- [Contribuição](#Contribuição)
+- [Licença](#Licença)
 
 ---
-## Requisitos do Projeto
+## Requisitos
 * Python3.7 ou superior
 * docker
 * docker-compose
 * virtualenv
 
 ---
-## Instalação do Projeto
+## Instalação
 
 ### Clonar Repositório
 ```bash
@@ -42,7 +42,7 @@ pip install -r requirements.txt
 ```
 
 ---
-## Configuração do Projeto
+## Configuração
 
 ### Arquivo de Configuração
 Criar o arquivo .env na raiz do projeto incluindo as constantes:
@@ -71,7 +71,7 @@ python manage.py migrate
 ```
 
 ---
-## Execução do Projeto
+## Execução
 Dois passos são necessário para a execução do projeto:
 - 1º - Iniciar o banco de dados
 ```bash
