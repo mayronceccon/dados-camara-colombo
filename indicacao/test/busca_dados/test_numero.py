@@ -12,3 +12,8 @@ class NumeroTest(TestCase):
         dados = ' Nº 1 Ano 2020 Autor: Anderson Ferreira da Silva Destinatário: Secretaria Municipal de Saúde Assunto: Estudos para promover doações de bicicleta com tração compartilhada - motorizada e humana, para agentes comunitários de saúde.'
         numero = Numero().recuperar(dados)
         self.assertEqual(1, numero)
+
+    def test_recuperar_numero_ano_2020_com_barra(self):
+        dados = ' nº 18/2020 Autor: Anderson Ferreira da Silva Destinatário: Secretaria Municipal de Saúde Assunto: Estudos para promover doações de bicicleta com tração compartilhada - motorizada e humana, para agentes comunitários de saúde.'
+        numero = Numero().recuperar(dados)
+        self.assertEqual(18, numero)
