@@ -8,6 +8,16 @@ from rest_framework import viewsets
 from .models import Indicacao
 from .serializers import IndicacaoSerializer
 from .services1 import IndicacaoPautaServices
+from django.db import connection
+
+
+def dictfetchall(cursor):
+    "Return all rows from a cursor as a dict"
+    columns = [col[0] for col in cursor.description]
+    return [
+        dict(zip(columns, row))
+        for row in cursor.fetchall()
+    ]
 
 
 class IndicacaoViewSet(viewsets.ModelViewSet):
@@ -68,5 +78,55 @@ class IndicacaoViewSet(viewsets.ModelViewSet):
         services.buscar()
         return JsonResponse(
             datetime.datetime.now(),
+            safe=False
+        )
+
+    @action(detail=False, methods=['GET'], name='Indicações por Bairros')
+    def bairros(self, request, *args, **kwargs):
+        """
+        Total de indicações por bairro
+        """
+        rows = []
+        with connection.cursor() as cursor:
+            sql = """
+                select
+                b.nome as bairro,
+                count(*) as indicacoes
+                from bairro_bairro as b
+                inner join indicacao_indicacao as i on i.assunto like CONCAT('%', b.nome, '%')
+                group by b.nome
+                order by indicacoes desc
+            """
+            cursor.execute(sql)
+            rows = dictfetchall(cursor)
+
+        return JsonResponse(
+            rows,
+            safe=False
+        )
+
+    @action(detail=False, methods=['GET'], name='Indicações dos Vereadores por Bairro')
+    def vereadores_bairros(self, request, *args, **kwargs):
+        """
+        Total de indicações dos vereadores por bairros
+        """
+        rows = []
+        with connection.cursor() as cursor:
+            sql = """
+                select
+                b.nome as bairro,
+                CONCAT(v.nome, ' (', v.apelido, ')') as vereador,
+                count(*) as indicacoes
+                from bairro_bairro as b
+                inner join indicacao_indicacao as i on i.assunto like CONCAT('%', b.nome, '%')
+                inner join vereador_vereador as v on v.id = i.vereador_id
+                group by b.nome, i.vereador_id
+                order by indicacoes desc
+            """
+            cursor.execute(sql)
+            rows = dictfetchall(cursor)
+
+        return JsonResponse(
+            rows,
             safe=False
         )
