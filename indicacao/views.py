@@ -45,14 +45,14 @@ class IndicacaoViewSet(viewsets.ModelViewSet):
 
         return queryset
 
-    # @method_decorator(cache_page(60*60*23))
+    @method_decorator(cache_page(60*60*23))
     def retrieve(self, request, pk=None):
         """
         Retorna uma indicação específica
         """
         return super().retrieve(request, pk)
 
-    # @method_decorator(cache_page(60*60*23))
+    @method_decorator(cache_page(60*60*23))
     def list(self, request):
         """
         Retorna a lista de indicações
