@@ -36,15 +36,12 @@ class PautaServices:
             )
 
     def __urls(self):
-        url_camara = 'http://www.camaracolombo.pr.gov.br'
-        url_pauta = "%s/pauta.html" % (url_camara)
+        url_pauta = "http://www.midias.camaracolombo.pr.gov.br/edital_sessoes.php"
         return {
-            'camara': url_camara,
             'pauta': url_pauta
         }
 
     def busca_arquivos_sessao(self):
-        url_camara = self.__urls()['camara']
         sessoes = self.__dados_html()
         dados = []
         for sessao in sessoes:
@@ -81,7 +78,6 @@ class PautaServices:
         return dados
 
     def __dados_html(self):
-        url_camara = self.__urls()['camara']
         url_pauta = self.__urls()['pauta']
 
         html = urlopen(url_pauta)
@@ -90,13 +86,10 @@ class PautaServices:
         sessoes = res.find_all(
             "a",
             {
-                "href": re.compile(r'(^pauta)(.*)(.pdf$)')
+                "href": re.compile(r'(.*pauta\/[0-9]{4}\/)(.*)(.pdf$)')
             }
         )
         return sessoes
 
     def __arquivo_sessao(self, sessao):
-        url_camara = self.__urls()['camara']
-        href = sessao['href']
-        arquivo_sessao = "%s/%s" % (url_camara, href)
-        return arquivo_sessao
+        return sessao['href']
