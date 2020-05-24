@@ -8,7 +8,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from .models import Pauta
 from .serializers import PautaSerializer
-from .services import PautaServices
+from .services1 import PautaServices
 
 
 class PautaViewSet(viewsets.ModelViewSet):

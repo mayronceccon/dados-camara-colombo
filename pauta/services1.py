@@ -6,6 +6,7 @@ from lib.notificacao import send
 import re
 
 from .models import Pauta
+from .services.link_pauta import LinkPauta
 
 
 class PautaServices:
@@ -81,15 +82,8 @@ class PautaServices:
         url_pauta = self.__urls()['pauta']
 
         html = urlopen(url_pauta)
-        res = BeautifulSoup(html.read(), "html5lib")
-
-        sessoes = res.find_all(
-            "a",
-            {
-                "href": re.compile(r'(.*pauta\/[0-9]{4}\/)(.*)(.pdf$)')
-            }
-        )
-        return sessoes
+        data = LinkPauta(html.read())
+        return data.info()
 
     def __arquivo_sessao(self, sessao):
         return sessao['href']
